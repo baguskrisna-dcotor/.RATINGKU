@@ -16,7 +16,7 @@
         <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExY2k5azR4ZHVoaDQ2emJ4Y3JqanRkZHZic2lucGwyc2FxdDl2bW9taCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/1DtYcLp3GDlY2RsVXd/giphy.gif" alt="" width="250px" height="250px">
     </div>
 
-    <div class="layout">
+    <div class="layout no-copy">
         <nav class="mainnavbar">
             <div class="logo">
                 <img src="img/logog3.png" width="20px" height="20px" alt="Logo">
@@ -81,25 +81,58 @@
         </aside>
 
         <div class="container">
-            <div class="sidebars"></div>
-            
-            <div class="content">
-                <div class="review-container no-copy">
-                    <div class="review-card">
-                        <div class="content-card">
-                            
-                            <div class="darken-card"></div>
-                            <h1 class="rating">5/5 ★★★★★</h1>
-                            <p class="deskripsi">A heartwarming tale of redemption and friendship, "Silent Voice" follows </p>
-                            <h2 class="judul">Silent Voice</h2>   
-                            <div class="open">
-                                <button class="button-open">Lihat</button>
+            <div class="content-container">
+                <div class="content ">
+                    <h1>Pilihan Editor</h1>
+                    <div class="review-container ">
+                        <div class="review-card">
+                            <div class="content-card">
+                                
+                                <div class="darken-card"></div>
+                                <h1 class="rating">5/5 ★★★★★</h1>
+                                <p class="deskripsi">A Silent Voice (Koe no Katachi) bercerita tentang Shouya Ishida, seorang mantan perundung yang di masa SMA mengintimidasi siswi pindahan tunarungu, Shouko Nishimiya, ... </p>
+                                <h2 class="judul">Silent Voice</h2>   
+                                <div class="open">
+                                    <button class="button-open">Lihat</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content ">
+                    <h1>Terbaik di 2025</h1>
+                    <div class="review-container ">
+                        <div class="review-card">
+                            <div class="content-card">
+                                
+                                <div class="darken-card"></div>
+                                <h1 class="rating">5/5 ★★★★★</h1>
+                                <p class="deskripsi">A Silent Voice (Koe no Katachi) bercerita tentang Shouya Ishida, seorang mantan perundung yang di masa SMA mengintimidasi siswi pindahan tunarungu, Shouko Nishimiya, ... </p>
+                                <h2 class="judul">Silent Voice</h2>   
+                                <div class="open">
+                                    <button class="button-open">Lihat</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="review-card">
+                            <div class="content-card">
+                                
+                                <div class="darken-card"></div>
+                                <h1 class="rating">5/5 ★★★★★</h1>
+                                <p class="deskripsi">A Silent Voice (Koe no Katachi) bercerita tentang Shouya Ishida, seorang mantan perundung yang di masa SMA mengintimidasi siswi pindahan tunarungu, Shouko Nishimiya, ... </p>
+                                <h2 class="judul">Silent Voice</h2>   
+                                <div class="open">
+                                    <button class="button-open">Lihat</button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            
+            
         </div>
-    </div>      
+    </div>     
+    <script src="js/explore.js"></script> 
 </body>
 </html>

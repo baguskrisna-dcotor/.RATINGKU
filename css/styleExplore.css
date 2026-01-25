@@ -1,7 +1,8 @@
-.review-container{
-    display: flex;
+:root{
+    --width-item: 250px;
+    --height-item: 350px;
+    --duration-transition: 0.3s
 }
-
 
 .layout{
     display: flex;
@@ -13,90 +14,97 @@
     width: calc(100% - 80px);
     transition: margin-left 0.4s ease;
     display: flex;
-    flex-direction: column; 
+    flex-direction: column;
 }
 
-.review-container {
-    display: flex;
+.review-container{
     width: 100%;
+    display: flex;
+    gap: 10px;
+    overflow-x: scroll;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding: 10px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.review-container::-webkit-scrollbar{
+    display: none;
 }
 
 .review-card {
-    width: 180px;
-    height: 280px;
+    width: var(--width-item);
+    min-width: var(--width-item); /* TAMBAHKAN INI - penting! */
+    height: var(--height-item);
     border-radius: 12px;
     position: relative;
     overflow: hidden;
-    cursor:default;
-    transition: all 0.3s ease-in-out;
+    cursor: default;
+    transition: all var(--duration-transition) ease-in-out;
+    flex-shrink: 0; /* TAMBAHKAN INI - mencegah card menyusut */
 }
 
 .review-card:hover{
     transform: scale(1.05);
-    transition: all 0.3s ease-in-out;
+    transition: all var(--duration-transition) ease-in-out;
 }
 
 .review-card::before{
     content: "";
     position: absolute;
-    width: 180px;
-    height: 280px;
+    width: var(--width-item);
+    height: var(--height-item);
     border-radius: 12px;
-    background-image:url("https://aervhwynaxjyzqeiijca.supabase.co/storage/v1/object/public/images/A%20Silent%20Voice.png");
+    background-image: url("https://aervhwynaxjyzqeiijca.supabase.co/storage/v1/object/public/images/A%20Silent%20Voice.png");
     background-color: #cccccc;
     background-size: cover;
     background-position: center;
-    transition: all 0.3s ease-in-out;
+    transition: all var(--duration-transition) ease-in-out;
 }
 
 .review-card:hover::before{
     transform: scale(1.05);
-    filter: brightness(0.7);
-    filter: blur(3px);
+    filter: brightness(0.7) blur(3px); /* GABUNGKAN filter jadi satu */
 }
-
 
 .rating{
     color: #ffff00;
     font-size: 20px;
     z-index: 1;
     transform: translateX(-150px);
-    transition: all 0.2s ease-in-out;
-    padding-left:10px ;
+    transition: all var(--duration-transition) ease-in-out;
+    padding-left: 10px;
     filter: blur(2px);
 }
 
 .review-card:hover .rating{
     transform: translateX(0px);
-    transition: all 0.5s ease-in-out;
+    transition: all var(--duration-transition) ease-in-out;
     filter: blur(0px);
 }
 
 .content-card{
-    width: 180px;
-    height: 280px;
-    background: #000000;
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(10, 0, 36, 0.45) 100%);
+    width: var(--width-item);
+    height: var(--height-item);
+    background-color: #007bff;
+    z-index: 4;
     display: flex;
     flex-direction: column;
 }
 
 .darken-card{
     position: absolute;
-    width: 180px;
-    height: 280px;
-    background: #541c5c;
-background: linear-gradient(180deg, rgba(84, 28, 92, 0.19) 0%, rgba(10, 0, 36, 0.71) 100%);
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, rgba(84, 28, 92, 0.19) 0%, rgba(10, 0, 36, 0.71) 100%);
     opacity: 0;
-    transition: all 0.2s ease-in-out;
-    
+    transition: all var(--duration-transition) ease-in-out;
 }
 
 .review-card:hover .darken-card{
     opacity: 1;
-    transition: all 0.2s ease-in-out;
+    transition: all var(--duration-transition) ease-in-out;
 }
-
 
 .judul{
     color: #ffffff;
@@ -108,15 +116,13 @@ background: linear-gradient(180deg, rgba(84, 28, 92, 0.19) 0%, rgba(10, 0, 36, 0
     padding: 10px;
     background-color: #3b005795;
     backdrop-filter: blur(5px);
-    transition: all 0.25s ease-in-out;
+    transition: all var(--duration-transition) ease-in-out;
 }
 
 .review-card:hover .judul{
-    transform: translateX(200px) ;
-    transition: all 0.35s ease-in-out;
-
+    transform: translateX(var(--width-item));
+    transition: all var(--duration-transition) ease-in-out;
 }
-
 
 .deskripsi{
     color: #ffffff;
@@ -125,18 +131,16 @@ background: linear-gradient(180deg, rgba(84, 28, 92, 0.19) 0%, rgba(10, 0, 36, 0
     z-index: 1;
     padding: 10px;
     opacity: 0;
-    transform: translateY(200px);
-    transition: all 0.2s ease-in-out;
+    transform: translateX(calc(-1 * var(--width-item)));
+    transition: all var(--duration-transition) ease-in-out;
     filter: blur(2px);
-
 }
 
 .review-card:hover .deskripsi{
-    transform: translateY(0px);
+    transform: translateX(0px); /* PERBAIKI - translateY jadi translateX */
     opacity: 1;
-    transition: all 0.2s ease-in-out;
+    transition: all var(--duration-transition) ease-in-out;
     filter: blur(0px);
-
 }
 
 .open{
@@ -147,15 +151,13 @@ background: linear-gradient(180deg, rgba(84, 28, 92, 0.19) 0%, rgba(10, 0, 36, 0
     padding-left: 10px;
     text-shadow: 0px 0px 4px #000000;
     padding: 10px;
-    background-color: #3b005795;
-    backdrop-filter: blur(5px);
-    transition: all 0.25s ease-in-out;
-    transform: translateY(-7.2vh) translateX(-220px);
+    transition: all var(--duration-transition) ease-in-out;
+    transform: translateX(calc(-1 * var(--width-item)));
     width: 110%;
 }
 
 .review-card:hover .open{
-    transform: translateY(-7.2vh) translateX(0px);
+    transform: translateX(0px);
 }
 
 .button-open{
@@ -166,6 +168,5 @@ background: linear-gradient(180deg, rgba(84, 28, 92, 0.19) 0%, rgba(10, 0, 36, 0
     border: none;
     font-size: 18px;
     cursor: pointer;
-    transition: all 0.3s ease;
-    cursor: pointer;
+    transition: all var(--duration-transition) ease;
 }
