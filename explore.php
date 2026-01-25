@@ -3,7 +3,7 @@
     <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Ratingku</title>
     <link rel="stylesheet" href="css/universal.css">
     <link rel="stylesheet" href="css/nav.css">
     <link rel="stylesheet" href="css/styleExplore.css">
@@ -82,45 +82,22 @@
 
         <div class="container">
             <div class="content-container">
+                <h1 class="hard-title">- Animasi -</h1>
                 <div class="content ">
                     <h1>Pilihan Editor</h1>
                     <div class="review-container ">
-                        <div class="review-card">
-                            <div class="content-card">
-                                
-                                <div class="darken-card"></div>
-                                <h1 class="rating">5/5 ★★★★★</h1>
-                                <p class="deskripsi">A Silent Voice (Koe no Katachi) bercerita tentang Shouya Ishida, seorang mantan perundung yang di masa SMA mengintimidasi siswi pindahan tunarungu, Shouko Nishimiya, ... </p>
-                                <h2 class="judul">Silent Voice</h2>   
-                                <div class="open">
-                                    <button class="button-open">Lihat</button>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
                 <div class="content ">
-                    <h1>Terbaik di 2025</h1>
+                    <h1>Test</h1>
                     <div class="review-container ">
-                        <div class="review-card">
+                        <div class="review-card" style="--image-url: url('https://mir-s3-cdn-cf.behance.net/project_modules/fs/2d409737172499.573704d73c7de.gif'">
                             <div class="content-card">
                                 
                                 <div class="darken-card"></div>
-                                <h1 class="rating">5/5 ★★★★★</h1>
-                                <p class="deskripsi">A Silent Voice (Koe no Katachi) bercerita tentang Shouya Ishida, seorang mantan perundung yang di masa SMA mengintimidasi siswi pindahan tunarungu, Shouko Nishimiya, ... </p>
-                                <h2 class="judul">Silent Voice</h2>   
-                                <div class="open">
-                                    <button class="button-open">Lihat</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="review-card">
-                            <div class="content-card">
-                                
-                                <div class="darken-card"></div>
-                                <h1 class="rating">5/5 ★★★★★</h1>
-                                <p class="deskripsi">A Silent Voice (Koe no Katachi) bercerita tentang Shouya Ishida, seorang mantan perundung yang di masa SMA mengintimidasi siswi pindahan tunarungu, Shouko Nishimiya, ... </p>
-                                <h2 class="judul">Silent Voice</h2>   
+                                <h1 class="rating">∞/5 ★★★★★</h1>
+                                <p class="deskripsi">test aj</p>
+                                <h2 class="judul">Hanya untuk testing</h2>   
                                 <div class="open">
                                     <button class="button-open">Lihat</button>
                                 </div>

@@ -1,172 +1,189 @@
-:root{
-    --width-item: 250px;
-    --height-item: 350px;
-    --duration-transition: 0.3s
+:root {
+  --width-item: 250px;
+  --height-item: 350px;
+  --duration-transition: 0.3s;
 }
 
-.layout{
-    display: flex;
-} 
+.layout {
+  display: flex;
+}
 
-.content {
-    margin-left: 80px;
-    padding: 20px;
-    width: calc(100% - 80px);
-    transition: margin-left 0.4s ease;
+.container{
+    width: calc(100% - 100px) !important;
+}
+
+.content-container{
+    margin:0px 0px 0px 80px ;
+    width: 100%;
+    gap: 20px;
     display: flex;
     flex-direction: column;
 }
 
-.review-container{
-    width: 100%;
-    display: flex;
-    gap: 10px;
-    overflow-x: scroll;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    padding: 10px;
-    -webkit-overflow-scrolling: touch;
+.hard-title{
+    padding: 0px;
+    font-size: 60px;
+    text-align: center;
 }
 
-.review-container::-webkit-scrollbar{
-    display: none;
+.content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.review-container {
+  width: 100%;
+  display: flex;
+  gap: 10px;}
+
+.review-container::-webkit-scrollbar {
+  display: none;
 }
 
 .review-card {
-    width: var(--width-item);
-    min-width: var(--width-item); /* TAMBAHKAN INI - penting! */
-    height: var(--height-item);
-    border-radius: 12px;
-    position: relative;
-    overflow: hidden;
-    cursor: default;
-    transition: all var(--duration-transition) ease-in-out;
-    flex-shrink: 0; /* TAMBAHKAN INI - mencegah card menyusut */
+  width: var(--width-item);
+  min-width: var(--width-item); /* TAMBAHKAN INI - penting! */
+  height: var(--height-item);
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+  cursor: default;
+  transition: all var(--duration-transition) ease-in-out;
+  flex-shrink: 0; /* TAMBAHKAN INI - mencegah card menyusut */
 }
 
-.review-card:hover{
-    transform: scale(1.05);
-    transition: all var(--duration-transition) ease-in-out;
+.review-card:hover {
+  transform: scale(1.05);
+  transition: all var(--duration-transition) ease-in-out;
 }
 
-.review-card::before{
-    content: "";
-    position: absolute;
-    width: var(--width-item);
-    height: var(--height-item);
-    border-radius: 12px;
-    background-image: url("https://aervhwynaxjyzqeiijca.supabase.co/storage/v1/object/public/images/A%20Silent%20Voice.png");
-    background-color: #cccccc;
-    background-size: cover;
-    background-position: center;
-    transition: all var(--duration-transition) ease-in-out;
+.review-card::before {
+  content: "";
+  position: absolute;
+  width: var(--width-item);
+  height: var(--height-item);
+  border-radius: 12px;
+  background-image: var(--image-url);
+  background-color: #cccccc;
+  background-size: cover;
+  background-position: center;
+  transition: all var(--duration-transition) ease-in-out;
 }
 
-.review-card:hover::before{
-    transform: scale(1.05);
-    filter: brightness(0.7) blur(3px); /* GABUNGKAN filter jadi satu */
+.review-card:hover::before {
+  transform: scale(1.05);
+  filter: brightness(0.7) blur(3px); /* GABUNGKAN filter jadi satu */
 }
 
-.rating{
-    color: #ffff00;
-    font-size: 20px;
-    z-index: 1;
-    transform: translateX(-150px);
-    transition: all var(--duration-transition) ease-in-out;
-    padding-left: 10px;
-    filter: blur(2px);
+.rating {
+  color: #ffff00;
+  font-size: 20px;
+  z-index: 1;
+  transform: translateX(-150px);
+  transition: all var(--duration-transition) ease-in-out;
+  padding-left: 10px;
+  filter: blur(2px);
 }
 
-.review-card:hover .rating{
-    transform: translateX(0px);
-    transition: all var(--duration-transition) ease-in-out;
-    filter: blur(0px);
+.review-card:hover .rating {
+  transform: translateX(0px);
+  transition: all var(--duration-transition) ease-in-out;
+  filter: blur(0px);
 }
 
-.content-card{
-    width: var(--width-item);
-    height: var(--height-item);
-    background-color: #007bff;
-    z-index: 4;
-    display: flex;
-    flex-direction: column;
+.content-card {
+  width: var(--width-item);
+  height: var(--height-item);
+  background-color: #007bff;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
 }
 
-.darken-card{
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(180deg, rgba(84, 28, 92, 0.19) 0%, rgba(10, 0, 36, 0.71) 100%);
-    opacity: 0;
-    transition: all var(--duration-transition) ease-in-out;
+.darken-card {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    180deg,
+    rgba(84, 28, 92, 0.19) 0%,
+    rgba(10, 0, 36, 0.71) 100%
+  );
+  opacity: 0;
+  transition: all var(--duration-transition) ease-in-out;
 }
 
-.review-card:hover .darken-card{
-    opacity: 1;
-    transition: all var(--duration-transition) ease-in-out;
+.review-card:hover .darken-card {
+  opacity: 1;
+  transition: all var(--duration-transition) ease-in-out;
 }
 
-.judul{
-    color: #ffffff;
-    font-size: 18px;
-    z-index: 2;
-    margin-top: auto;
-    padding-left: 10px;
-    text-shadow: 0px 0px 4px #000000;
-    padding: 10px;
-    background-color: #3b005795;
-    backdrop-filter: blur(5px);
-    transition: all var(--duration-transition) ease-in-out;
+.judul {
+  position: absolute;
+  width: 100%;
+  bottom: 10%;
+  color: #ffffff;
+  font-size: 18px;
+  z-index: 2;
+  margin-top: auto;
+  padding-left: 10px;
+  text-shadow: 0px 0px 4px #000000;
+  padding: 10px;
+  background-color: #3b005795;
+  backdrop-filter: blur(5px);
+  transition: all var(--duration-transition) ease-in-out;
 }
 
-.review-card:hover .judul{
-    transform: translateX(var(--width-item));
-    transition: all var(--duration-transition) ease-in-out;
+.review-card:hover .judul {
+  transform: translateX(var(--width-item));
+  transition: all var(--duration-transition) ease-in-out;
+  border-radius: 20px;
 }
 
-.deskripsi{
-    color: #ffffff;
-    font-size: 14px;
-    margin-top: 50px;
-    z-index: 1;
-    padding: 10px;
-    opacity: 0;
-    transform: translateX(calc(-1 * var(--width-item)));
-    transition: all var(--duration-transition) ease-in-out;
-    filter: blur(2px);
+.deskripsi {
+  color: #ffffff;
+  font-size: 14px;
+  margin-top: 50px;
+  z-index: 1;
+  padding: 10px;
+  opacity: 0;
+  transform: translateX(calc(-1 * var(--width-item)));
+  transition: all var(--duration-transition) ease-in-out;
+  filter: blur(2px);
 }
 
-.review-card:hover .deskripsi{
-    transform: translateX(0px); /* PERBAIKI - translateY jadi translateX */
-    opacity: 1;
-    transition: all var(--duration-transition) ease-in-out;
-    filter: blur(0px);
+.review-card:hover .deskripsi {
+  transform: translateX(0px); /* PERBAIKI - translateY jadi translateX */
+  opacity: 1;
+  transition: all var(--duration-transition) ease-in-out;
+  filter: blur(0px);
 }
 
-.open{
-    color: #ffffff;
-    font-size: 18px;
-    z-index: 1;
-    margin-top: auto;
-    padding-left: 10px;
-    text-shadow: 0px 0px 4px #000000;
-    padding: 10px;
-    transition: all var(--duration-transition) ease-in-out;
-    transform: translateX(calc(-1 * var(--width-item)));
-    width: 110%;
+.open {
+  color: #ffffff;
+  font-size: 18px;
+  z-index: 1;
+  margin-top: auto;
+  padding-left: 10px;
+  text-shadow: 0px 0px 4px #000000;
+  padding: 10px;
+  transition: all var(--duration-transition) ease-in-out;
+  transform: translateX(calc(-1 * var(--width-item)));
+  width: 110%;
 }
 
-.review-card:hover .open{
-    transform: translateX(0px);
+.review-card:hover .open {
+  transform: translateX(0px);
 }
 
-.button-open{
-    width: 40%;
-    height: 100%;
-    background-color: #007bff;
-    color: #ffffff;
-    border: none;
-    font-size: 18px;
-    cursor: pointer;
-    transition: all var(--duration-transition) ease;
+.button-open {
+  width: 40%;
+  height: 100%;
+  background-color: #007bff;
+  color: #ffffff;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all var(--duration-transition) ease;
 }

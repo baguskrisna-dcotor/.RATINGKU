@@ -1,4 +1,4 @@
-let card = `<div class="review-card">
+let card = `<div class="review-card" style="--image-url: url('https://aervhwynaxjyzqeiijca.supabase.co/storage/v1/object/public/images/A%20Silent%20Voice.png')">
                             <div class="content-card">
                                 
                                 <div class="darken-card"></div>
