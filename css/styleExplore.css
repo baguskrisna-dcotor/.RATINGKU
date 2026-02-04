@@ -1,6 +1,6 @@
 :root {
-  --width-item: 250px;
-  --height-item: 350px;
+  --width-item: 220px;
+  --height-item: 320px;
   --duration-transition: 0.3s;
 }
 
@@ -35,8 +35,11 @@
 .review-container {
   width: 100%;
   display: flex;
-  gap: 10px;}
-
+  gap: 10px;
+  overflow-x: auto !important;
+  padding-right: 50px;
+  padding-bottom: 10px; 
+}
 .review-container::-webkit-scrollbar {
   display: none;
 }
@@ -50,13 +53,10 @@
   overflow: hidden;
   cursor: default;
   transition: all var(--duration-transition) ease-in-out;
-  flex-shrink: 0; /* TAMBAHKAN INI - mencegah card menyusut */
+  flex-shrink: 0;
+
 }
 
-.review-card:hover {
-  transform: scale(1.05);
-  transition: all var(--duration-transition) ease-in-out;
-}
 
 .review-card::before {
   content: "";
@@ -72,7 +72,7 @@
 }
 
 .review-card:hover::before {
-  transform: scale(1.05);
+  transform: scale(1.1);
   filter: brightness(0.7) blur(3px); /* GABUNGKAN filter jadi satu */
 }
 
@@ -95,7 +95,7 @@
 .content-card {
   width: var(--width-item);
   height: var(--height-item);
-  background-color: #007bff;
+  background-color: transparent;
   z-index: 4;
   display: flex;
   flex-direction: column;

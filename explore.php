@@ -81,7 +81,6 @@
 
         <div class="container">
             <div class="content-container">
-                <h1 class="hard-title">- Animasi -</h1>
                 <div class="content ">
                     <h1>Pilihan Editor</h1>
                     <div class="review-container ">
@@ -110,5 +109,6 @@
         </div>
     </div>     
     <script src="js/explore.js"></script> 
+    <script src="js/horizontalScrollFix.js"></script> 
 </body>
 </html>
