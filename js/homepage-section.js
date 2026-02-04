@@ -1,15 +1,35 @@
+if ('scrollRestoration' in history) {
+  history.scrollRestoration = 'manual';
+}
+
 const sliderTrack = document.getElementById("sliderTrack");
 const sliders = document.querySelector(".movie-slider");
+const slidertrackanime = document.getElementById("animesliderTrack")
+const slidersanime = document.querySelector(".anime-slider");
 
 
-sliders.addEventListener(
-  "wheel",
-  function (e) {
-    e.preventDefault();
-    sliders.scrollLeft += e.deltaY;
-  },
-  { passive: false }
-);
+function horizontalScroll(container) {
+  container.addEventListener("wheel", (e) => {
+    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+      e.preventDefault();
+      container.scrollLeft += e.deltaY;
+    }
+  }, { passive: false });
+}
+
+horizontalScroll(sliders);
+horizontalScroll(slidersanime);
+
+const titlesanime = [
+  "Neon Horizon",
+  "Silent Galaxy",
+  "Quantum Dream",
+  "Last Signal",
+  "Crimson Sky",
+  "Future Protocol",
+  "Eclipse Void",
+  "Midnight AI"
+];
 
 const titles = [
   "Neon Horizon",
@@ -37,6 +57,23 @@ titles.forEach(title => {
   `;
   sliderTrack.appendChild(card);
 });
+
+titlesanime.forEach (title => {
+    const card = document.createElement("div");
+    card.className = "anime-card";
+    card.innerHTML = `
+    <img src="${randomImage()}">
+    <div class="anime-info">
+      <div class="anime-title">${title}</div>
+    </div>`;
+    slidertrackanime.appendChild(card);
+});
+
+
+
+
+
+
 class InfiniteSlider {
     constructor() {
         this.track = document.getElementById("infoSlider");
@@ -273,7 +310,6 @@ class InfiniteSlider {
     }
 }
 
-// Initialize
 document.addEventListener("DOMContentLoaded", () => {
     new InfiniteSlider();
 });

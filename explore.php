@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="css/styleExplore.css">
 
     </head>
-     
 <body>
 <div class="rotate-warning">
         Putar perangkat anda untuk melanjutkan
@@ -91,7 +90,7 @@
                 <div class="content ">
                     <h1>Test</h1>
                     <div class="review-container ">
-                        <div class="review-card" style="--image-url: url('https://mir-s3-cdn-cf.behance.net/project_modules/fs/2d409737172499.573704d73c7de.gif'">
+                        <div class="review-card" style="--image-url: url('https://mir-s3-cdn-cf.behance.net/project_modules/fs/2d409737172499.573704d73c7de.gif')">
                             <div class="content-card">
                                 
                                 <div class="darken-card"></div>

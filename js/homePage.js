@@ -74,3 +74,4 @@ function make_element(data, kelas, containerName){
 }
 
 make_element(genre_data, "genre-span", ".text-list")
+

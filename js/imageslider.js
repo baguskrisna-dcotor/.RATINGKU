@@ -14,7 +14,7 @@ async function loadImages() {
   const { data, error } = await supabaseclient
     .storage
     .from("images")
-    .list("", { limit: 100 });
+    .list("", { limit: 20 });
 
   if (error) {
     console.error(error);
@@ -34,7 +34,7 @@ async function loadImages() {
 
     files.forEach(name => {
       const img = document.createElement("img");
-      img.src = `${SUPABASE_URL}/storage/v1/object/public/images/${encodeURIComponent(name)}`;
+      img.src = `${SUPABASE_URL}/storage/v1/object/public/images/${encodeURIComponent(name)}`,loading = "lazy"; 
       img.className = sizes[Math.floor(Math.random() * sizes.length)];
       row.appendChild(img);
     });
