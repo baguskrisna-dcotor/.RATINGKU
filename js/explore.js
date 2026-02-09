@@ -84,3 +84,4 @@ fetch(`${SUPABASE_URL}/rest/v1/content?select=type`, {
 function goToDetail(contentId) {
     window.location.href = `detail.php?id=${contentId}`;
 }
+

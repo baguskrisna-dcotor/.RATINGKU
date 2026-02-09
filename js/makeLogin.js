@@ -12,6 +12,10 @@ const loginModal = `
     <input type="email" id="loginEmail" placeholder="Email">
     <input type="password" id="loginPassword" placeholder="Password">
     <button id="submitLogin">Masuk</button>
+    <button id="loginGoogle" class="google-btn">
+    <img src="img/google.png" alt="Google Logo" style="width:20px; height:20px; vertical-align:middle; margin-right:8px;">
+    Login dengan Google
+    </button>
     <p id="loginError" class="error-message"></p>
     <p class="modal-footer">
       Belum punya akun? <a href="#" id="switchToRegister">Daftar di sini</a>
@@ -181,6 +185,10 @@ function setupModalEvents() {
     // ===== SUBMIT HANDLERS =====
     submitLoginBtn.addEventListener("click", handleLogin);
     submitRegisterBtn.addEventListener("click", handleRegister);
+
+    const googleLoginBtn = document.getElementById("loginGoogle");
+    googleLoginBtn.addEventListener("click", handleGoogleLogin);
+
     
     // Enter key support
     document.getElementById("loginPassword").addEventListener("keypress", (e) => {
@@ -351,10 +359,39 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Listen untuk perubahan auth state
-supabase.auth.onAuthStateChange((event, session) => {
+supabase.auth.onAuthStateChange(async (event, session) => {
     if (event === 'SIGNED_IN') {
-        console.log('User signed in:', session);
-    } else if (event === 'SIGNED_OUT') {
-        console.log('User signed out');
+        await ensureUserProfile(session.user);
+        await loadUserProfile(session.user.id);
+        updateUIForLoggedInUser(session.user);
     }
 });
+
+
+async function handleGoogleLogin() {
+    const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google'
+    });
+
+    if (error) {
+        alert("❌ Login Google gagal");
+        console.error(error);
+    }
+}
+
+async function ensureUserProfile(user) {
+    const { data } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('id', user.id)
+        .single();
+
+    if (!data) {
+        await supabase.from('profiles').insert([
+            {
+                id: user.id,
+                username: user.email.split('@')[0]
+            }
+        ]);
+    }
+}
