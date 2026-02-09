@@ -39,6 +39,8 @@
                  <li class=" kategori"><a href="">Categories</a></li>
                  <li><a href="search.php">Search</a></li>
                  <button class="login"> Login </button>
+                  <script type="module" src="js/supabase-client.js"></script>
+    <script type="module" src="js/makeLogin.js"></script>
                  <button class="premium">Premium
                      <img src="img/crown.png" width="15px" height="15px">
                  </button>
@@ -234,6 +236,7 @@
              <h3>Deretan Anime terbaik tahun ini yang disarankan untukmu dan disiap diberi rating</h3>
              <div class="anime-slider" id="animeSlider">
                  <div class="anime-slider-track" id="animesliderTrack"></div>
+
              </div>
          </section>
      </div>

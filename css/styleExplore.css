@@ -1,6 +1,6 @@
 :root {
-  --width-item: 220px;
-  --height-item: 320px;
+  --width-item: 270px;
+  --height-item: 370px;
   --duration-transition: 0.3s;
 }
 
@@ -49,7 +49,6 @@
   width: var(--width-item);
   min-width: var(--width-item); /* TAMBAHKAN INI - penting! */
   height: var(--height-item);
-  border-radius: 12px;
   position: relative;
   overflow: hidden;
   cursor: default;
@@ -64,7 +63,6 @@
   position: absolute;
   width: var(--width-item);
   height: var(--height-item);
-  border-radius: 12px;
   background-image: var(--image-url);
   background-color: #cccccc;
   background-size: cover;

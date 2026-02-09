@@ -43,7 +43,7 @@ function initSmoothScroll() {
                 e.preventDefault();
                 
                 const direction = e.key === 'ArrowLeft' ? -1 : 1;
-                const cardWidth = 250;
+                const cardWidth = 270; 
                 const gap = 10;
                 const scrollAmount = (cardWidth + gap) * direction;
                 
@@ -88,7 +88,7 @@ function initSmoothScroll() {
             clearTimeout(scrollTimeout);
             
             scrollTimeout = setTimeout(() => {
-                const cardWidth = 220 + 10;
+                const cardWidth = 270 + 10;
                 const scrollPos = container.scrollLeft;
                 const targetCard = Math.round(scrollPos / cardWidth);
                 const targetScroll = targetCard * cardWidth;

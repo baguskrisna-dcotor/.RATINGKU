@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="css/universal.css">
     <link rel="stylesheet" href="css/nav.css">
     <link rel="stylesheet" href="css/styleExplore.css">
+    <link rel="stylesheet" href="css/modalLogin.css">
 
     </head>
 <body>
@@ -83,11 +84,12 @@
             <div class="content-container">
                 
             </div>
-            
+            <img src="https://tenor.com/b75QmYw4wqC.gif" alt="Loading" class="loading-gif" width="100px" height="100px">
             
         </div>
     </div>     
     <script src="js/explore.js"></script> 
     <script src="js/horizontalScrollFix.js"></script> 
+    <script src="js/makeLogin.js"></script> 
 </body>
 </html>
