@@ -88,8 +88,10 @@
             
         </div>
     </div>     
-    <script src="js/explore.js"></script> 
-    <script src="js/horizontalScrollFix.js"></script> 
-    <script src="js/makeLogin.js"></script> 
+    
+    <script src="js/horizontalScrollFix.js"></script>
+    
+    <script type="module" src="js/explore.js"></script>
+    <script type="module" src="js/makeLogin.js"></script>
 </body>
 </html>
