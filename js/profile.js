@@ -3,8 +3,6 @@
 // ========================================
 import { supabase } from './supabase-client.js';
 
-const PP_BASE_URL = 'https://aervhwynaxjyzqeiijca.supabase.co/storage/v1/object/public/photoprofile/';
-const DEFAULT_PP = 'pp.webp';
 
 // ========================================
 // BACK NAVIGATION
@@ -72,7 +70,7 @@ async function loadUserProfile(userId) {
     try {
         const { data, error } = await supabase
             .from('profiles')
-            .select('username, pp')
+            .select('username, photo_profiles(url)')
             .eq('id', userId)
             .single();
         
@@ -239,8 +237,7 @@ function updateUI(user, profile) {
     document.getElementById('userEmail').textContent = user.email;
     
     // Update avatar
-    const ppFilename = profile?.pp || DEFAULT_PP;
-    const avatarURL = PP_BASE_URL + ppFilename;
+    const avatarURL = profile?.photo_profiles?.url;
     document.getElementById('userAvatar').src = avatarURL;
     
     return { username, avatarURL };

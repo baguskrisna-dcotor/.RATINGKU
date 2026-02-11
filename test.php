@@ -27,17 +27,8 @@
             <p id="userEmail" class="email">Loading...</p>
             
         </div>
-    </div>
+</div>
 
-    <!-- Ratings Section -->
-    <div class="ratings-section">
-        <h2 class="section-title">Ratingmu</h2>
-        <div id="ratingsContainer" class="ratings-container">
-            <!-- Ratings will be loaded here -->
-            <div class="loading">Memuat rating...</div>
-        </div>
-    </div>
-
-    <script type="module" src="js/profile.js"></script>
+    <script src="./js/test.js"></script>
 </body>
 </html>

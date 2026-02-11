@@ -19,7 +19,7 @@ body {
     padding: 0;
     font-family: var(--font-default);
       background: linear-gradient(145deg, #000000 0% ,rgb(20, 0, 87) 10%, rgb(62, 0, 144) 50%, rgb(20, 0, 87) 100%);
-      
+    scroll-behavior: smooth !important;
     color: var(--font-color);
 }
 .title{
