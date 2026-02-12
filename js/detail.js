@@ -210,7 +210,7 @@ async function loadRatings() {
             .from('rating')
             .select(`
                 *,
-                users:user_id(email)
+                users:user_id(username)
             `)
             .eq('content_id', contentId)
             .order('created_at', { ascending: false });
@@ -238,6 +238,7 @@ async function loadRatings() {
         displayNoReviews();
     }
 }
+
 function displayReviews(ratings) {
     const reviewsList = document.getElementById('reviewsList');
     
@@ -245,14 +246,18 @@ function displayReviews(ratings) {
         displayNoReviews();
         return;
     }
-    
+    await const { data, error } = await supabase
+        .from('profiles')
+        .select(`
+            `)
     reviewsList.innerHTML = ratings.map(rating => {
         // ✅ Akses dari relasi users
-        const email = rating.users?.email || 'Unknown User';
+        const email = rating.users?.username || 'Unknown User';
         const displayName = email.split('@')[0];
         const initial = displayName.charAt(0).toUpperCase();
+
         const date = formatDate(rating.created_at);
-        const isOwnReview = rating.users_id === currentUser.id;
+        const isOwnReview = rating.user_id === currentUser.id;
         
         const stars = Array.from({ length: 5 }, (_, i) => {
             const filled = i < rating.rating;
