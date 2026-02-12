@@ -216,8 +216,7 @@ async function loadRatings() {
             .order('created_at', { ascending: false });
         
         if (error) throw error;
-        
-        console.log('Ratings data:', data); // Debug - cek di console
+    
         
         // Calculate average rating and display
         if (data && data.length > 0) {
