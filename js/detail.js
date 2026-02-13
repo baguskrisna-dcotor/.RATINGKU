@@ -256,8 +256,6 @@ async function displayReviews(ratings) {
         const email = rating.users?.username || 'Unknown User';
         const displayName = email.split('@')[0];
         const initial = rating.users.photo_profiles.url;
-        console.log(data.photo_profiles.url);
-        console.log(rating)
 
         const date = formatDate(rating.created_at);
         const isOwnReview = rating.user_id === currentUser.id;
