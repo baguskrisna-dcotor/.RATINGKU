@@ -579,14 +579,16 @@ window.goToDetail = async function(contentId,categories) {
                     year = dataContent.first_air_date
                 }
                 urlIMG =  "https://image.tmdb.org/t/p/w500" + dataContent.poster_path;
-
-
+                const urlBackdrop = dataContent.backdrop_path ? "https://image.tmdb.org/t/p/original"+ dataContent.backdrop_path : urlIMG
+                const stat = dataContent.status
                 const dataToInsert = {
                     tmdb_id: dataContent.id,
                     title: dataTitle,
                     description: dataContent.overview,
                     release_year: year.split("-")[0],
-                    url_path: urlIMG
+                    url_path: urlIMG,
+                    url_backdrop_path: urlBackdrop,
+                    type: stat,
                 }
                 console.log(dataContent)
 
@@ -606,11 +608,17 @@ window.goToDetail = async function(contentId,categories) {
                 console.error(error)
             }
         }
-        // window.location.href = `detail.html?id=${contentId}`;
+        await delay(1000)
+        window.location.href = `detail.html?id=${contentId}`;
     } catch(error){
         msgBox.error("Gagal memuat")
     }
 };
+
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 
 // ========================================
 // DEBUG HELPERS

@@ -50,9 +50,9 @@ async function init() {
 async function loadContentDetail() {
     try {
         const { data, error } = await supabase
-            .from('content')
-            .select('*, images(image_url)')
-            .eq('id', contentId)
+            .from('content_duplicate')
+            .select('*')
+            .eq('tmdb_id', contentId)
             .single();
         
         if (error) throw error;
@@ -70,12 +70,13 @@ async function loadContentDetail() {
 }
 
 function displayContent(content) {
-    const imageUrl = content.images && content.images.length > 0 
-        ? content.images[0].image_url 
+    const imageUrl = content.url_path && content.url_path.length > 0 
+        ? content.url_path
         : "https://i.pinimg.com/originals/f3/d0/19/f3d019284cfaaf4d093941ecb0a3ea40.gif";
 
     // Set hero background
-    document.getElementById('heroSection').style.backgroundImage = `url(${imageUrl})`;
+    const imageBackdropUrl = content.url_backdrop_path
+    document.getElementById('heroSection').style.backgroundImage = `url(${imageBackdropUrl})`;
     
     // Set poster
     document.getElementById('posterImage').src = imageUrl;
