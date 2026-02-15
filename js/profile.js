@@ -95,14 +95,11 @@ async function loadUserRatings(userId) {
                 rating,
                 review,
                 created_at,
-                content:content_id (
+                content_duplicate (
                     id,
                     title,
                     type,
-                    images (
-                        image_url,
-                        is_primary
-                    )
+                    url_path
                 )
             `)
             .eq('user_id', userId)
@@ -196,8 +193,8 @@ function renderRatings(ratings, username, userPP) {
     }
     
     container.innerHTML = ratings.map(rating => {
-        const contentTitle = rating.content?.title || 'Unknown';
-        const contentImage = getPrimaryImage(rating.content?.images);
+        const contentTitle = rating.content_duplicate?.title || 'Unknown';
+    const contentImage = rating.content_duplicate?.url_path || 'img/placeholder.jpg';
         const timeAgoText = timeAgo(rating.created_at);
         
         return `

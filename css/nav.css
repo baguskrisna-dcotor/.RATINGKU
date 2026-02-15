@@ -1,63 +1,63 @@
-.mainnavbar{
+.mainnavbar {
     position: fixed;
     top: 0;
     width: 100%;
-    height: 80px;
+    height: clamp(52px, 8vh, 80px);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0;  
+    padding: 0;
     z-index: 999;
     backdrop-filter: blur(14px);
     font-family: var(--font-default);
-
 }
 
-.mainnavbar .logo{
-    padding-left: 20px;
+.mainnavbar .logo {
+    padding-left: clamp(10px, 2vw, 20px);
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 10px;
+    gap: clamp(6px, 1vw, 10px);
     color: white;
     font-family: var(--font-title);
-    font-size: 24px;
+    font-size: clamp(14px, 2vw, 24px);
     font-weight: bold;
 }
 
-.mainnavbar .logo img{
-    width: 50px;
-    height: 50px;
+.mainnavbar .logo img {
+    width: clamp(26px, 4vw, 50px);
+    height: clamp(26px, 4vw, 50px);
 }
 
 .mainnavbar ul {
     display: flex;
     align-items: center;
     list-style: none;
-    gap: 12px; /* Kurangi gap dari 20px jadi 12px */
+    gap: clamp(4px, 1vw, 12px);
     margin: 0;
     padding: 0;
-    padding-right: 105px; /* Tambahkan padding kanan agar tidak ketutup scrollbar */
+    padding-right: clamp(8px, 5vw, 105px);
 }
 
 .mainnavbar ul li a {
     display: block;
     color: rgb(255, 255, 255);
     text-align: center;
-    padding: 14px 16px;
+    padding: clamp(8px, 1.2vw, 14px) clamp(10px, 1.5vw, 16px);
     text-decoration: none;
     background-color: var(--main-color);
     border-radius: 4px;
+    font-size: clamp(12px, 1.3vw, 16px);
 }
 
 .mainnavbar ul .login {
-    height: 40px; 
+    height: clamp(30px, 4.5vh, 40px);
     width: fit-content;
-    padding: 10px 16px; /* Sesuaikan padding */
+    padding: clamp(6px, 1vh, 10px) clamp(10px, 1.5vw, 16px);
     white-space: nowrap;
     border: none;
     cursor: pointer;
-    font-size: medium;
+    font-size: clamp(11px, 1.2vw, 16px);
     font-weight: bold;
     font-family: var(--font-default);
     color: white;
@@ -71,28 +71,23 @@
 
 .mainnavbar ul .login:hover {
     background: #b7a9ff;
-    transform: scale(1.05); /* Kurangi scale dari 1.1 jadi 1.05 */
+    transform: scale(1.05);
 }
 
 .mainnavbar ul .premium {
-    height: 40px;
-    width: 100px;
-    padding: 10px;
+    height: clamp(30px, 4.5vh, 40px);
+    width: clamp(65px, 8vw, 100px);
+    padding: clamp(6px, 1vh, 10px);
     cursor: pointer;
-    font-size: small;
+    font-size: clamp(10px, 1.1vw, 14px);
     font-weight: bold;
     font-family: var(--font-default);
-    
-    /* Border Gradient */
     border: 2px solid;
     border-image: linear-gradient(135deg, #ffde0a, #ff8400) 1;
-
-    /* Text Gradient */
     background-image: linear-gradient(135deg, #ffde0a, #ff8400);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-
     display: flex;
     justify-content: center;
     align-items: center;
@@ -104,51 +99,49 @@
     -webkit-background-clip: initial;
     background-clip: initial;
     color: white;
-    transform: scale(1.05); /* Kurangi scale dari 1.1 jadi 1.05 */
+    transform: scale(1.05);
     border-image: none;
     border: 2px solid #6C4DFF;
 }
 
-.mainnavbar ul .premium img{
-    margin-left: 5px;
-    width: 25px;
-    height: 25px;
+.mainnavbar ul .premium img {
+    margin-left: clamp(2px, 0.5vw, 5px);
+    width: clamp(14px, 2vw, 25px);
+    height: clamp(14px, 2vw, 25px);
 }
 
-.container{
+.container {
     display: flex;
-    margin-top: 100px;
+    margin-top: clamp(70px, 10vh, 100px);
     gap: 20px;
 }
 
-.sidebars{
+.sidebars {
     flex: 1;
 }
 
-/* ===== SIDEBAR DASAR ===== */
+/* ===== SIDEBAR ===== */
 .sidebar {
     z-index: 998;
     position: fixed;
     top: 0;
     left: 0;
-    width: 60px;
+    width: clamp(48px, 5vw, 60px);
     height: calc(100vh - 50px);
     display: flex;
     justify-content: space-between;
-    padding: 100px 10px 20px 20px;
+    padding: clamp(70px, 10vh, 100px) 10px 20px clamp(10px, 1.5vw, 20px);
     background: transparent;
     backdrop-filter: blur(14px);
     transition: width .4s ease;
     overflow: hidden;
 }
 
-/* Sidebar melebar saat hover */
 .sidebar:hover {
-    width: 240px;
+    width: clamp(160px, 18vw, 240px);
 }
 
-/* ===== BAGIAN Kanan(SEMBUNYI AWAL) ===== */
-.sidebar .right{
+.sidebar .right {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -158,13 +151,11 @@
     transition: all .4s ease;
 }
 
-/* Kanan MUNCUL SAAT SIDEBAR / Kiri DI HOVER */
-.sidebar:hover .right{
+.sidebar:hover .right {
     opacity: 1;
     transform: translateX(0);
 }
 
-/* Profile */
 .sidebar .left {
     display: flex;
     flex-direction: column;
@@ -173,17 +164,17 @@
 }
 
 .sidebar .left img {
-    width: 20px;
-    height: 20px;
+    width: clamp(16px, 2vw, 20px);
+    height: clamp(16px, 2vw, 20px);
     border-radius: 50%;
     box-shadow: 0 0 25px rgba(108, 77, 255, .6);
     object-fit: cover;
-    transition: transform 0.3s ease; 
+    transition: transform 0.3s ease;
 }
 
 .sidebar .left img.hover-img {
-   opacity: 0;
-   transition: transform 0.3s ease;
+    opacity: 0;
+    transition: transform 0.3s ease;
 }
 
 .sidebar .left img.main-image {
@@ -193,20 +184,20 @@
 }
 
 .sidebars:hover img.hover-img {
-   opacity: 1;
-   transform: rotate(360deg);
+    opacity: 1;
+    transform: rotate(360deg);
 }
 
 .sidebars:hover img.main-image {
-   opacity: 0;
-   transform: rotate(360deg);
+    opacity: 0;
+    transform: rotate(360deg);
 }
 
 .sidebar .left button.home {
-    width: 48px;
-    height: 48px;
+    width: clamp(36px, 4vw, 48px);
+    height: clamp(36px, 4vw, 48px);
     border: 2px solid rgb(255, 217, 0);
-    background-image: 
+    background-image:
         linear-gradient(transparent),
         linear-gradient(135deg, #383838, #1a1a1a);
     cursor: pointer;
@@ -214,41 +205,35 @@
     box-shadow: 0 10px 30px rgba(0,229,255,.4);
     border-radius: 14px;
     display: flex;
-    justify-content: center; 
-    align-items: center;     
-    overflow: hidden;      
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
 }
 
 .sidebar .left button.home img {
-    width: 34px; 
-    height: 34px;
+    width: clamp(24px, 3vw, 34px);
+    height: clamp(24px, 3vw, 34px);
     object-fit: contain;
 }
 
 .sidebar .left button.setting {
-    width: 48px;
-    height: 48px;
+    width: clamp(36px, 4vw, 48px);
+    height: clamp(36px, 4vw, 48px);
     border-radius: 14px;
     border: none;
     background: rgba(11, 15, 43, 0.75);
     cursor: pointer;
     color: transparent;
     display: flex;
-    justify-content: center; 
-    align-items: center;     
-    overflow: hidden;      
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
 }
 
 .sidebar .left button.setting img {
-    width: 24px; 
-    height: 24px;
+    width: clamp(18px, 2.2vw, 24px);
+    height: clamp(18px, 2.2vw, 24px);
     object-fit: contain;
-}
-
-/* ===== BAGIAN KANAN ===== */
-.sidebar .right {
-    display: flex;
-    align-items: center;
 }
 
 .sidebar .right .button-container {
@@ -256,23 +241,23 @@
     flex-direction: column;
     align-items: left;
     justify-content: flex-start;
-    padding-right: 30px;
+    padding-right: clamp(10px, 2vw, 30px);
     gap: 10px;
 }
 
-.sidebar div.button-container nav.button-row-1{
+.sidebar div.button-container nav.button-row-1 {
     justify-content: center;
     align-items: center;
     display: flex;
     flex-direction: column;
 }
 
-/* Tombol menu */
-.sidebar div.button-container nav.button-row-1 button {
+.sidebar div.button-container nav.button-row-1 button,
+.sidebar div.button-container nav.button-row-2 button {
     width: 100%;
     display: flex;
     margin-bottom: 20px;
-    padding: 14px;
+    padding: clamp(10px, 1.2vw, 14px);
     border-radius: 16px;
     background: transparent;
     border: 1px solid rgba(108,77,255,.35);
@@ -281,39 +266,32 @@
     transition: all .3s ease;
     justify-content: flex-start;
     align-items: center;
+    font-size: clamp(12px, 1.2vw, 16px);
 }
 
-.sidebar div.button-container nav.button-row-2 button{
-    width: 100%;
-    display: flex;
-    margin-bottom: 20px;
-    padding: 14px;
-    border-radius: 16px;
-    background: transparent;
-    border: 1px solid rgba(108,77,255,.35);
-    color: #fff;
-    cursor: pointer;
-    transition: all .3s ease;
-    justify-content: flex-start;
-    align-items: center;
-}
-
-.sidebar div.button-container nav.button-row-1 button.category-1:hover,
-.sidebar div.button-container nav.button-row-1 button.category-2:hover,
-.sidebar div.button-container nav.button-row-1 button.category-3:hover,
-.sidebar div.button-container nav.button-row-1 button.category-4:hover,
-.sidebar div.button-container nav.button-row-2 button.category-5:hover,
-.sidebar div.button-container nav.button-row-2 button.category-6:hover,
-.sidebar div.button-container nav.button-row-2 button.category-7:hover,
-.sidebar div.button-container nav.button-row-2 button.category-8:hover {
+.sidebar div.button-container nav.button-row-1 button:hover,
+.sidebar div.button-container nav.button-row-2 button:hover {
     background: linear-gradient(135deg, #6C4DFF, #00E5FF);
     box-shadow: 0 0 30px rgba(0,229,255,.6);
     transform: translateX(6px);
 }
 
-/* Hover menu */
-.sidebar nav.button button:hover {
-    background: linear-gradient(135deg, #6C4DFF, #00E5FF);
-    box-shadow: 0 0 30px rgba(0,229,255,.6);
-    transform: translateX(6px);
+/* ========================================
+   MOBILE (< 480px)
+   ======================================== */
+@media (max-width: 480px) {
+    /* Navbar link disembunyikan — terlalu sempit */
+    .mainnavbar ul li {
+        display: none;
+    }
+
+    /* Sidebar disembunyikan di mobile */
+    .sidebar,
+    .sidebars {
+        display: none;
+    }
+
+    .container {
+        margin-top: clamp(60px, 9vh, 80px);
+    }
 }

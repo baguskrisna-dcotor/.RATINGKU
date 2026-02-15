@@ -204,7 +204,6 @@ function renderTopRatedCard(fullCard, category) {
     background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 140, 0, 0.05) 100%);
     border: 2px solid rgba(255, 215, 0, 0.3);
     border-radius: 20px;
-    padding :10px 20px 30px 10px;
     box-shadow: 0 8px 32px rgba(255, 215, 0, 0.2), 
                 0 0 60px rgba(255, 215, 0, 0.1) inset;
     position: relative;
@@ -235,7 +234,6 @@ function renderTopRatedCard(fullCard, category) {
     
     <div style="position: relative; z-index: 1;">
         <h1 style="
-            font-size: 2.5em;
             background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FFD700 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -264,7 +262,6 @@ function renderTopRatedCard(fullCard, category) {
         </h1>
         
         <p style="
-            font-size: 20px;
             color: #bee3ff;
             font-family: var(--font-default);
             text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);

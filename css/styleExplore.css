@@ -1,6 +1,7 @@
 :root {
-  --width-item: 270px;
-  --height-item: 370px;
+  /* Card ukuran otomatis: min 140px, ideal 22vw, max 270px */
+  --width-item: clamp(140px, 22vw, 270px);
+  --height-item: clamp(200px, 32vw, 370px);
   --duration-transition: 0.3s;
 }
 
@@ -8,28 +9,27 @@ body::-webkit-scrollbar {
   display: none;
 }
 
-
-.container-explore{
-      display: flex;
-    margin : 100px auto;
-    gap: 20px;
-    width: 90%;
-    padding: 0px 50px 0px 50px;
-    position: relative;
-    align-items: center;
+.container-explore {
+  display: flex;
+  margin: clamp(70px, 10vh, 120px) auto;
+  gap: 20px;
+  width: 95%;
+  padding: 0 clamp(12px, 3vw, 50px);
+  position: relative;
+  align-items: center;
 }
 
-.content-container{
-    width: 100%;
-    gap: 20px;
-    display: flex;
-    flex-direction: column;
+.content-container {
+  width: 100%;
+  gap: clamp(12px, 2vw, 20px);
+  display: flex;
+  flex-direction: column;
 }
 
-.hard-title{
-    padding: 0px;
-    font-size: 60px;
-    text-align: center;
+.hard-title {
+  padding: 0;
+  font-size: clamp(24px, 5vw, 60px);
+  text-align: center;
 }
 
 .content {
@@ -38,31 +38,35 @@ body::-webkit-scrollbar {
   width: 100%;
 }
 
+.content > h1 {
+  font-size: clamp(16px, 2.5vw, 28px);
+  padding-left: clamp(4px, 1vw, 10px);
+}
+
 .review-container {
   width: 100%;
   display: flex;
-  gap: 10px;
-  overflow-x: auto ;
+  gap: clamp(6px, 1vw, 10px);
+  overflow-x: auto;
   overflow-y: hidden !important;
-  padding-right: 50px;
-  padding-bottom: 10px; 
+  padding-right: clamp(12px, 3vw, 50px);
+  padding-bottom: 10px;
 }
+
 .review-container::-webkit-scrollbar {
   display: none;
 }
 
 .review-card {
   width: var(--width-item);
-  min-width: var(--width-item); /* TAMBAHKAN INI - penting! */
+  min-width: var(--width-item);
   height: var(--height-item);
   position: relative;
   overflow: hidden;
   cursor: default;
   transition: all var(--duration-transition) ease-in-out;
   flex-shrink: 0;
-
 }
-
 
 .review-card::before {
   content: "";
@@ -78,14 +82,14 @@ body::-webkit-scrollbar {
 
 .review-card:hover::before {
   transform: scale(1.1);
-  filter: brightness(0.7) blur(3px); /* GABUNGKAN filter jadi satu */
+  filter: brightness(0.7) blur(3px);
 }
 
 .rating {
   color: #ffff00;
-  font-size: 20px;
+  font-size: clamp(11px, 1.2vw, 16px);
   z-index: 1;
-  transform: translateX(-150px);
+  transform: translateX(calc(-1 * var(--width-item)));
   transition: all var(--duration-transition) ease-in-out;
   padding-left: 10px;
   filter: blur(2px);
@@ -93,7 +97,6 @@ body::-webkit-scrollbar {
 
 .review-card:hover .rating {
   transform: translateX(0px);
-  transition: all var(--duration-transition) ease-in-out;
   filter: blur(0px);
 }
 
@@ -121,19 +124,16 @@ body::-webkit-scrollbar {
 
 .review-card:hover .darken-card {
   opacity: 1;
-  transition: all var(--duration-transition) ease-in-out;
 }
 
 .judul {
   position: absolute;
   width: 100%;
   color: #ffffff;
-  font-size: 18px;
+  font-size: clamp(11px, 1.4vw, 18px);
   z-index: 2;
-  margin-top: auto;
-  padding-left: 10px;
+  padding: clamp(6px, 1vw, 10px);
   text-shadow: 0px 0px 4px #000000;
-  padding: 10px;
   background-color: #00000095;
   backdrop-filter: blur(5px);
   transition: all var(--duration-transition) ease-in-out;
@@ -142,37 +142,60 @@ body::-webkit-scrollbar {
 
 .review-card:hover .judul {
   transform: translateX(var(--width-item));
-  transition: all var(--duration-transition) ease-in-out;
   border-radius: 20px;
 }
 
 .deskripsi {
   color: #ffffff;
-  font-size: 14px;
-  margin-top: 50px;
+  font-size: clamp(9px, 1vw, 12px) !important;
+  margin-top: clamp(28px, 4vw, 50px);
   z-index: 1;
-  padding: 10px;
+  padding: clamp(6px, 1vw, 10px);
   opacity: 0;
   transform: translateX(calc(-1 * var(--width-item)));
   transition: all var(--duration-transition) ease-in-out;
   filter: blur(2px);
 }
 
+.top-rated > div > h1 {
+  font-size: clamp(1.1em, 3vw, 2em) !important;
+}
+
+.top-rated > div > p {
+  font-size: clamp(13px, 1.5vw, 18px) !important;
+}
+
+.top-rated .rating {
+  font-size: clamp(11px, 1.2vw, 16px) !important;
+}
+
+.top-rated .deskripsi {
+  font-size: clamp(9px, 1vw, 12px) !important;
+  margin-top: clamp(20px, 3vw, 35px);
+}
+
+.top-rated .judul {
+  font-size: clamp(10px, 1.1vw, 14px) !important;
+}
+
+.top-rated .button-open {
+  font-size: clamp(10px, 1vw, 13px);
+}
+
+/* Ganti yang sudah ada */
 .review-card:hover .deskripsi {
-  transform: translateX(0px); /* PERBAIKI - translateY jadi translateX */
+  transform: translateX(0px);
   opacity: 1;
-  transition: all var(--duration-transition) ease-in-out;
   filter: blur(0px);
 }
 
 .open {
   color: #ffffff;
-  font-size: 18px;
+  font-size: clamp(12px, 1.4vw, 18px);
   z-index: 1;
   margin-top: auto;
-  padding-left: 10px;
+  padding: clamp(6px, 1vw, 10px);
   text-shadow: 0px 0px 4px #000000;
-  padding: 10px;
   transition: all var(--duration-transition) ease-in-out;
   transform: translateX(calc(-1 * var(--width-item)));
   width: 100%;
@@ -183,21 +206,80 @@ body::-webkit-scrollbar {
 }
 
 .button-open {
-  width: 40%;
+  width: 50%;
   height: 100%;
   background-color: #007bff;
   color: #ffffff;
   border: none;
-  font-size: 18px;
+  font-size: clamp(11px, 1.3vw, 18px);
   cursor: pointer;
   transition: all var(--duration-transition) ease;
 }
 
-
-.loading-gif{
-  width: 100px;
+.loading-gif {
+  width: clamp(50px, 7vw, 100px);
   position: fixed;
-  right: 0%;
-  bottom: 0%;
+  right: 0;
+  bottom: 0;
   z-index: 99;
+}
+
+/* Top rated section fluid */
+.top-rated {
+  margin-top: clamp(40px, 8vh, 80px) !important;
+  margin-bottom: clamp(20px, 4vh, 50px) !important;
+}
+
+.top-rated h1 {
+  font-size: clamp(1.1em, 3.5vw, 2.5em) !important;
+  gap: clamp(6px, 1vw, 15px) !important;
+}
+
+.top-rated p {
+  font-size: clamp(13px, 1.8vw, 20px) !important;
+}
+
+/* Search bar fluid */
+.search-header {
+  padding: 0 clamp(4px, 1vw, 10px);
+}
+
+/* ========================================
+   MOBILE (< 480px) — hover jadi tap-friendly
+   ======================================== */
+@media (max-width: 480px) {
+  /* Tampilkan semua konten card tanpa perlu hover */
+  .darken-card {
+    opacity: 1;
+  }
+
+  .rating {
+    transform: translateX(0);
+    filter: blur(0);
+  }
+
+  .deskripsi {
+    display: none; /* terlalu kecil, sembunyikan saja */
+  }
+
+  .judul {
+    transform: none !important;
+  }
+
+  .open {
+    transform: translateX(0);
+  }
+
+  .button-open {
+    width: 80%;
+  }
+
+  .search-bar-wrapper {
+    flex-direction: column;
+  }
+
+  .advanced-search-btn {
+    width: 100%;
+    justify-content: center;
+  }
 }
