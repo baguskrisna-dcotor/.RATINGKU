@@ -500,6 +500,7 @@ async function initializeContent() {
         await fetchTopRatedContent();
         await getTrending("movie");
         await getTrending("tv");
+        await getTrending("anime");
         
         // Fetch all categories
         await Promise.all(types.map(type => fetchData(type)));
@@ -603,13 +604,13 @@ window.goToDetail = async function(contentId,categories) {
                     return null;
                 } msgBox.success('berhasil insert')
                 msgBox.info("Cek tabel 'content_duplicate'")
+                
             } catch(error) {
                 msgBox.error("Gagal memuat")
                 console.error(error)
             }
-        }
-        await delay(1000)
-        window.location.href = `detail.html?id=${contentId}`;
+        }await delay(1000)
+                window.location.href = `detail.html?id=${contentId}`;
     } catch(error){
         msgBox.error("Gagal memuat")
     }
@@ -646,23 +647,45 @@ const options = {
 
 async function getTrending(category) {
   try {
-    const res = await fetch(
-      `https://api.themoviedb.org/3/trending/${category}/week`,
-      options
-    );
+    let res,data,movies;
+    
+    if (category.toLowerCase() === "anime"){
+        res = await fetch(
+        `https://api.themoviedb.org/3/discover/tv?with_genres=16&with_origin_country=JP&sort_by=popularity.desc`,
+        options
+        );
+    } else{
+        res = await fetch(
+        `https://api.themoviedb.org/3/trending/${category}/week`,
+        options
+        
+    );}   
 
     if (!res.ok) {
-      throw new Error("Response not OK");
+        throw new Error("Response not OK");
+    }
+    data = await res.json();
+    movies = data.results;
+    
+    
+
+    
+
+    
+    let fullCard = ""
+    var categoryHandler
+
+    if (category.toLowerCase() === "anime"){
+        categoryHandler = "tv"
+    } else {
+        categoryHandler = category
     }
 
-    const data = await res.json();
-    const movies = data.results; // bukan result
-    let fullCard = ""
     movies.forEach( item =>{
         const urlIMG =  "https://image.tmdb.org/t/p/w500" + item.poster_path;
-        fullCard += makeCard(item.id, urlIMG, item.title || item.name, item.overview, item.vote_average, category);
+        fullCard += makeCard(item.id, urlIMG, item.title || item.name, item.overview, item.vote_average, categoryHandler);
     })
-    renderCard(fullCard, `Trending ${category} in TMDb`)
+    renderCard(fullCard, `Trending ${category} di TMDb`)
   } catch (err) {
     console.error(err);
     msgBox.error("ERROR TMDB");
