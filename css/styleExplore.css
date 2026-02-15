@@ -127,7 +127,6 @@ body::-webkit-scrollbar {
 .judul {
   position: absolute;
   width: 100%;
-  bottom: 10%;
   color: #ffffff;
   font-size: 18px;
   z-index: 2;
@@ -138,6 +137,7 @@ body::-webkit-scrollbar {
   background-color: #00000095;
   backdrop-filter: blur(5px);
   transition: all var(--duration-transition) ease-in-out;
+  bottom: 0;
 }
 
 .review-card:hover .judul {

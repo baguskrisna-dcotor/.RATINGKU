@@ -18,9 +18,9 @@ window[SCRIPT_ID] = true;
 // CARD BUILDER
 // ========================================
 
-function makeCard(id, urlImage, title, description, rating){
+function makeCard(id, urlImage, title, description, rating,categories = null){
     const escapedTitle = escapeHtml(title);
-    const escapedDesc = escapeHtml(description);
+    const escapedDesc = escapeHtml(limitWords(description,30));
     
     const card = `<div class="review-card" data-id="${id}" style="--image-url: url(${urlImage})">
                     <div class="content-card">
@@ -29,11 +29,17 @@ function makeCard(id, urlImage, title, description, rating){
                         <p class="deskripsi">${escapedDesc}</p>
                         <h2 class="judul">${escapedTitle}</h2>   
                         <div class="open">
-                            <button class="button-open" onclick="goToDetail(${id})">Lihat</button>
+                            <button class="button-open" onclick="goToDetail(${id},'${categories}')">Lihat</button>
                         </div>
                     </div>
                 </div>`;
     return card;
+}
+
+function limitWords(str, limit){
+    const words = str.split(" ");
+    if (words.length <= limit) return str;
+    return words.slice(0,limit).join(" ") + "...";
 }
 
 function renderCard(fullCard, category){
@@ -492,7 +498,8 @@ async function initializeContent() {
         console.log(`📦 Found ${types.length} categories:`, types);
 
         await fetchTopRatedContent();
-        await getTrending();
+        await getTrending("movie");
+        await getTrending("tv");
         
         // Fetch all categories
         await Promise.all(types.map(type => fetchData(type)));
@@ -544,42 +551,59 @@ if (document.readyState === 'loading') {
 // GLOBAL FUNCTIONS
 // ========================================
 
-window.goToDetail = async function(contentId) {
+window.goToDetail = async function(contentId,categories) {
+    console.log("dll")
     try{
         const {data, error} = await supabase
         .from("content_duplicate")
         .select("*")
         .eq("tmdb_id", contentId);
-
-        if(data < 0){
+        if(data.length > 0){
             console.log(data)
+            msgBox.info("Cek tabel 'content_duplicate'")
         } else {
-            const url = `https://api.themoviedb.org/3/movie/${contentId}?api_key=${API_TMDB}&language=en-US`
             try {
-                const res = await fetch(url);
-                const data = await res.json();
-                const urlIMG =  "https://image.tmdb.org/t/p/w500" + data.poster_path;
+                let dataContent, dataTitle, urlIMG,year;
+                if (categories.toLowerCase() === "movie") {
+                    const url = `https://api.themoviedb.org/3/movie/${contentId}?api_key=${API_TMDB}&language=en-US`
+                    const res = await fetch(url);
+                    dataContent = await res.json();
+                    dataTitle = dataContent.title;
+                    year = dataContent.release_date
+                
+            } else if(categories.toLowerCase() === "tv") {
+                    const url = `https://api.themoviedb.org/3/tv/${contentId}?api_key=${API_TMDB}&language=en-US`
+                    const res = await fetch(url);
+                    dataContent = await res.json();
+                    dataTitle = dataContent.name;
+                    year = dataContent.first_air_date
+                }
+                urlIMG =  "https://image.tmdb.org/t/p/w500" + dataContent.poster_path;
 
 
                 const dataToInsert = {
-                    tmdb_id: data.id,
-                    title: data.title,
-                    description: data.overview,
-                    created_at: data.release_date,
+                    tmdb_id: dataContent.id,
+                    title: dataTitle,
+                    description: dataContent.overview,
+                    release_year: year.split("-")[0],
                     url_path: urlIMG
                 }
+                console.log(dataContent)
 
 
-                const {error} = await supabaseAdmin
+                const {error} = await supabase
                 .from('content_duplicate')
                 .insert([dataToInsert])
                 
                 if (error) {
-                    msgBox.error("Gagal memuat")
+                    msgBox.error("Gagal memuwwat")
+                    console.log(error)
                     return null;
                 } msgBox.success('berhasil insert')
-            } catch {
+                msgBox.info("Cek tabel 'content_duplicate'")
+            } catch(error) {
                 msgBox.error("Gagal memuat")
+                console.error(error)
             }
         }
         // window.location.href = `detail.html?id=${contentId}`;
@@ -612,10 +636,10 @@ const options = {
   }
 };
 
-async function getTrending() {
+async function getTrending(category) {
   try {
     const res = await fetch(
-      'https://api.themoviedb.org/3/trending/movie/week',
+      `https://api.themoviedb.org/3/trending/${category}/week`,
       options
     );
 
@@ -628,10 +652,9 @@ async function getTrending() {
     let fullCard = ""
     movies.forEach( item =>{
         const urlIMG =  "https://image.tmdb.org/t/p/w500" + item.poster_path;
-        fullCard += makeCard(item.id, urlIMG, item.title, item.overview, item.vote_average);
+        fullCard += makeCard(item.id, urlIMG, item.title || item.name, item.overview, item.vote_average, category);
     })
-    renderCard(fullCard, "Trending in TMDb")
-    
+    renderCard(fullCard, `Trending ${category} in TMDb`)
   } catch (err) {
     console.error(err);
     msgBox.error("ERROR TMDB");
