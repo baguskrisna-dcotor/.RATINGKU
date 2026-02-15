@@ -2,7 +2,6 @@
 // ALL RATINGS - JAVASCRIPT WITH SUPABASE
 // ========================================
 
-// Import Supabase Client
 import { supabase } from './supabase-client.js';
 
 // Global Variables
@@ -56,39 +55,33 @@ async function initializeApp() {
 // ========================================
 
 function setupEventListeners() {
-    // Search input with debounce
     let searchTimeout;
     searchInput.addEventListener('input', (e) => {
         clearTimeout(searchTimeout);
         searchTimeout = setTimeout(() => {
             searchQuery = e.target.value.toLowerCase().trim();
             filterAndRenderRatings();
-        }, 300); // Debounce 300ms
+        }, 300);
     });
 
-    // Sort filter
     sortFilter.addEventListener('change', (e) => {
         currentFilter = e.target.value;
         filterAndRenderRatings();
     });
 
-    // Rating filter
     ratingFilter.addEventListener('change', (e) => {
         currentRatingFilter = e.target.value;
         filterAndRenderRatings();
     });
 
-    // Refresh button
     btnRefresh.addEventListener('click', async () => {
         showLoading(true);
         await initializeApp();
     });
 
-    // Modal close
     modalClose.addEventListener('click', closeModal);
     modalOverlay.addEventListener('click', closeModal);
 
-    // Close modal on ESC key
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && userModal.classList.contains('active')) {
             closeModal();
@@ -102,7 +95,7 @@ function setupEventListeners() {
 
 async function fetchAllData() {
     try {
-        // Fetch ratings dengan join ke profiles, photo_profiles, dan content
+        // ✅ FIXED: join ke content_duplicate, bukan content
         const { data: ratingsData, error: ratingsError } = await supabase
             .from('rating')
             .select(`
@@ -116,7 +109,7 @@ async function fetchAllData() {
                     username,
                     photo_profiles (url)
                 ),
-                content (title)
+                content_duplicate (title)
             `)
             .order('created_at', { ascending: false });
 
@@ -131,7 +124,8 @@ async function fetchAllData() {
             user_name: rating.profiles?.username || 'Unknown User',
             user_photo: rating.profiles?.photo_profiles?.url || null,
             content_id: rating.content_id,
-            content_title: rating.content?.title || 'Unknown Content',
+            // ✅ FIXED: ambil title dari content_duplicate
+            content_title: rating.content_duplicate?.title || 'Unknown Content',
             rating: rating.rating,
             review: rating.review || '',
             created_at: rating.created_at
@@ -173,14 +167,12 @@ async function fetchAllData() {
 function renderUsers() {
     usersList.innerHTML = '';
     
-    // Sort users by total ratings
     const sortedUsers = [...allUsers].sort((a, b) => b.totalRatings - a.totalRatings);
 
     sortedUsers.forEach(user => {
         const userCard = document.createElement('div');
         userCard.className = 'user-card';
         
-        // Generate avatar HTML
         const avatarHTML = user.user_photo 
             ? `<div class="user-avatar" style="background-image: url('${user.user_photo}'); background-size: cover; background-position: center;"></div>`
             : `<div class="user-avatar"><i class="fas fa-user"></i></div>`;
@@ -199,14 +191,10 @@ function renderUsers() {
             </div>
         `;
 
-        userCard.addEventListener('click', () => {
-            showUserModal(user);
-        });
-
+        userCard.addEventListener('click', () => showUserModal(user));
         usersList.appendChild(userCard);
     });
 
-    // Update user count
     document.getElementById('userCount').textContent = `${allUsers.length} user${allUsers.length > 1 ? 's' : ''}`;
 }
 
@@ -250,7 +238,6 @@ function renderRatings() {
         const ratingCard = document.createElement('div');
         ratingCard.className = 'rating-card';
         
-        // Generate avatar HTML
         const avatarHTML = rating.user_photo 
             ? `<div class="rating-avatar" style="background-image: url('${rating.user_photo}'); background-size: cover; background-position: center;"></div>`
             : `<div class="rating-avatar"><i class="fas fa-user"></i></div>`;
@@ -280,7 +267,6 @@ function renderRatings() {
             </div>
         `;
 
-        // Add click event to user info
         const userInfo = ratingCard.querySelector('.rating-user-info');
         userInfo.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -297,24 +283,18 @@ function renderRatings() {
 // ========================================
 
 function filterAndRenderRatings() {
-    // Start with all ratings
     filteredRatings = [...allRatings];
 
-    // Apply search filter
     if (searchQuery && searchQuery.length > 0) {
         filteredRatings = filteredRatings.filter(rating => {
             const searchLower = searchQuery.toLowerCase();
-            
-            // Search in multiple fields
             const matchUsername = rating.user_name && rating.user_name.toLowerCase().includes(searchLower);
             const matchContentTitle = rating.content_title && rating.content_title.toLowerCase().includes(searchLower);
             const matchReview = rating.review && rating.review.toLowerCase().includes(searchLower);
-            
             return matchUsername || matchContentTitle || matchReview;
         });
     }
 
-    // Apply rating filter
     if (currentRatingFilter !== 'all') {
         const filterValue = parseInt(currentRatingFilter);
         if (!isNaN(filterValue)) {
@@ -322,69 +302,33 @@ function filterAndRenderRatings() {
         }
     }
 
-    // Apply sort
     switch (currentFilter) {
         case 'recent':
-            // Newest first
-            filteredRatings.sort((a, b) => {
-                const dateA = new Date(a.created_at);
-                const dateB = new Date(b.created_at);
-                return dateB - dateA;
-            });
+            filteredRatings.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
             break;
-            
         case 'oldest':
-            // Oldest first
-            filteredRatings.sort((a, b) => {
-                const dateA = new Date(a.created_at);
-                const dateB = new Date(b.created_at);
-                return dateA - dateB;
-            });
+            filteredRatings.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
             break;
-            
         case 'highest':
-            // Highest rating first, then by date
-            filteredRatings.sort((a, b) => {
-                if (b.rating !== a.rating) {
-                    return b.rating - a.rating;
-                }
-                return new Date(b.created_at) - new Date(a.created_at);
-            });
+            filteredRatings.sort((a, b) => b.rating !== a.rating ? b.rating - a.rating : new Date(b.created_at) - new Date(a.created_at));
             break;
-            
         case 'lowest':
-            // Lowest rating first, then by date
-            filteredRatings.sort((a, b) => {
-                if (a.rating !== b.rating) {
-                    return a.rating - b.rating;
-                }
-                return new Date(b.created_at) - new Date(a.created_at);
-            });
+            filteredRatings.sort((a, b) => a.rating !== b.rating ? a.rating - b.rating : new Date(b.created_at) - new Date(a.created_at));
             break;
-            
         case 'most-active':
-            // Sort by users with most ratings
             const userRatingsCount = {};
             allRatings.forEach(r => {
                 userRatingsCount[r.user_id] = (userRatingsCount[r.user_id] || 0) + 1;
             });
-            
             filteredRatings.sort((a, b) => {
                 const countDiff = userRatingsCount[b.user_id] - userRatingsCount[a.user_id];
-                if (countDiff !== 0) {
-                    return countDiff;
-                }
-                // If same count, sort by date
-                return new Date(b.created_at) - new Date(a.created_at);
+                return countDiff !== 0 ? countDiff : new Date(b.created_at) - new Date(a.created_at);
             });
             break;
-            
         default:
-            // Default: recent
             filteredRatings.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     }
 
-    // Update display
     renderRatings();
     updateFilteredStats();
 }
@@ -405,7 +349,6 @@ function showUserModal(user) {
 
     userRatingsList.innerHTML = '';
 
-    // Sort user's ratings by date (newest first)
     const sortedUserRatings = [...user.ratings].sort((a, b) => 
         new Date(b.created_at) - new Date(a.created_at)
     );
@@ -454,43 +397,28 @@ function updateStats() {
 }
 
 function updateFilteredStats() {
-    // Optional: Update stats based on filtered results
     const filteredCount = filteredRatings.length;
+    const existingBadge = document.querySelector('.filter-badge');
+    if (existingBadge) existingBadge.remove();
     
-    if (filteredCount !== allRatings.length) {
-        // Show filtered count
-        const ratingsContainer = document.getElementById('ratingsContainer');
-        const existingBadge = document.querySelector('.filter-badge');
-        
-        if (existingBadge) {
-            existingBadge.remove();
-        }
-        
-        if (filteredCount > 0) {
-            const filterBadge = document.createElement('div');
-            filterBadge.className = 'filter-badge';
-            filterBadge.style.cssText = `
-                padding: 8px 16px;
-                background: #f0f0f0;
-                border-radius: 8px;
-                margin-bottom: 16px;
-                font-size: 14px;
-                color: #666;
-            `;
-            filterBadge.innerHTML = `
-                <i class="fas fa-filter"></i>
-                Showing ${filteredCount} of ${allRatings.length} ratings
-                ${searchQuery ? `<span style="color: #007bff; margin-left: 8px;">Search: "${escapeHtml(searchQuery)}"</span>` : ''}
-                ${currentRatingFilter !== 'all' ? `<span style="color: #007bff; margin-left: 8px;">Rating: ${currentRatingFilter} stars</span>` : ''}
-            `;
-            ratingsContainer.parentElement.insertBefore(filterBadge, ratingsContainer);
-        }
-    } else {
-        // Remove badge if showing all
-        const existingBadge = document.querySelector('.filter-badge');
-        if (existingBadge) {
-            existingBadge.remove();
-        }
+    if (filteredCount !== allRatings.length && filteredCount > 0) {
+        const filterBadge = document.createElement('div');
+        filterBadge.className = 'filter-badge';
+        filterBadge.style.cssText = `
+            padding: 8px 16px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            color: #666;
+        `;
+        filterBadge.innerHTML = `
+            <i class="fas fa-filter"></i>
+            Showing ${filteredCount} of ${allRatings.length} ratings
+            ${searchQuery ? `<span style="color: #007bff; margin-left: 8px;">Search: "${escapeHtml(searchQuery)}"</span>` : ''}
+            ${currentRatingFilter !== 'all' ? `<span style="color: #007bff; margin-left: 8px;">Rating: ${currentRatingFilter} stars</span>` : ''}
+        `;
+        ratingsContainer.parentElement.insertBefore(filterBadge, ratingsContainer);
     }
 }
 
@@ -500,24 +428,16 @@ function updateFilteredStats() {
 
 function escapeHtml(text) {
     if (!text) return '';
-    const map = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#039;'
-    };
+    const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
     return text.toString().replace(/[&<>"']/g, m => map[m]);
 }
 
 function generateStars(rating) {
     let stars = '';
     for (let i = 1; i <= 5; i++) {
-        if (i <= rating) {
-            stars += '<i class="fas fa-star"></i>';
-        } else {
-            stars += '<i class="far fa-star empty"></i>';
-        }
+        stars += i <= rating
+            ? '<i class="fas fa-star"></i>'
+            : '<i class="far fa-star empty"></i>';
     }
     return stars;
 }
@@ -540,44 +460,27 @@ function formatDate(dateString) {
     } else if (diffDays < 7) {
         return `${diffDays} days ago`;
     } else {
-        return date.toLocaleDateString('id-ID', { 
-            day: 'numeric', 
-            month: 'short', 
-            year: 'numeric' 
-        });
+        return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
     }
 }
 
 function showLoading(show) {
-    if (show) {
-        loadingOverlay.classList.remove('hidden');
-    } else {
-        loadingOverlay.classList.add('hidden');
-    }
+    show ? loadingOverlay.classList.remove('hidden') : loadingOverlay.classList.add('hidden');
 }
 
 function showToast(message, type = 'success') {
-    const toastMessage = document.getElementById('toastMessage');
-    toastMessage.textContent = message;
+    document.getElementById('toastMessage').textContent = message;
     toast.classList.add('show');
-
-    setTimeout(() => {
-        toast.classList.remove('show');
-    }, 3000);
+    setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
-// Clear all filters
 window.clearFilters = function() {
     searchQuery = '';
     currentRatingFilter = 'all';
     currentFilter = 'recent';
-    
-    // Reset UI
     searchInput.value = '';
     sortFilter.value = 'recent';
     ratingFilter.value = 'all';
-    
-    // Re-render
     filterAndRenderRatings();
     showToast('Filters cleared', 'success');
 };
@@ -586,43 +489,25 @@ window.clearFilters = function() {
 // REALTIME SUBSCRIPTION (OPTIONAL)
 // ========================================
 
-// Enable realtime updates ketika ada rating baru
 function setupRealtimeSubscription() {
-    const ratingsSubscription = supabase
+    return supabase
         .channel('ratings-channel')
-        .on(
-            'postgres_changes',
-            {
-                event: '*', // Listen to all events (INSERT, UPDATE, DELETE)
-                schema: 'public',
-                table: 'rating'
-            },
-            (payload) => {
-                console.log('Realtime change detected:', payload);
-                
-                // Refresh data when change detected
-                if (payload.eventType === 'INSERT' || 
-                    payload.eventType === 'UPDATE' || 
-                    payload.eventType === 'DELETE') {
-                    showToast('New rating detected! Refreshing...');
-                    initializeApp();
-                }
-            }
-        )
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'rating' }, (payload) => {
+            console.log('Realtime change detected:', payload);
+            showToast('New rating detected! Refreshing...');
+            initializeApp();
+        })
         .subscribe();
-
-    return ratingsSubscription;
 }
 
-// Call this function to enable realtime updates
-// Uncomment the line below in initializeApp() if you want realtime
+// Uncomment untuk aktifkan realtime:
 // setupRealtimeSubscription();
 
 // ========================================
 // ADDITIONAL SUPABASE FUNCTIONS
 // ========================================
 
-// Function to fetch user's ratings only
+// ✅ FIXED: fetchUserRatings juga pakai content_duplicate
 async function fetchUserRatings(userId) {
     try {
         const { data, error } = await supabase
@@ -638,7 +523,7 @@ async function fetchUserRatings(userId) {
                     username,
                     photo_profiles (url)
                 ),
-                content (title)
+                content_duplicate (title)
             `)
             .eq('user_id', userId)
             .order('created_at', { ascending: false });
@@ -651,10 +536,8 @@ async function fetchUserRatings(userId) {
     }
 }
 
-// Function to get statistics
 async function fetchStatistics() {
     try {
-        // Get total ratings count
         const { count: totalRatings, error: countError } = await supabase
             .from('rating')
             .select('*', { count: 'exact', head: true });
@@ -671,7 +554,6 @@ async function fetchStatistics() {
             ? (avgData.reduce((sum, r) => sum + r.rating, 0) / avgData.length).toFixed(1)
             : 0;
 
-        // Get unique users count
         const { data: usersData, error: usersError } = await supabase
             .from('rating')
             .select('user_id');
@@ -680,17 +562,9 @@ async function fetchStatistics() {
 
         const uniqueUsers = new Set(usersData.map(r => r.user_id)).size;
 
-        return {
-            totalRatings,
-            avgRating,
-            totalUsers: uniqueUsers
-        };
+        return { totalRatings, avgRating, totalUsers: uniqueUsers };
     } catch (error) {
         console.error('Error fetching statistics:', error);
-        return {
-            totalRatings: 0,
-            avgRating: 0,
-            totalUsers: 0
-        };
+        return { totalRatings: 0, avgRating: 0, totalUsers: 0 };
     }
 }

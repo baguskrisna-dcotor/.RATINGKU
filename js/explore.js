@@ -18,9 +18,9 @@ window[SCRIPT_ID] = true;
 // CARD BUILDER
 // ========================================
 
-function makeCard(id, urlImage, title, description, rating,categories = null){
+function makeCard(id, urlImage, title, description, rating, categories = null){
     const escapedTitle = escapeHtml(title);
-    const escapedDesc = escapeHtml(limitWords(description,30));
+    const escapedDesc = escapeHtml(limitWords(description, 30));
     
     const card = `<div class="review-card" data-id="${id}" style="--image-url: url(${urlImage})">
                     <div class="content-card">
@@ -39,7 +39,7 @@ function makeCard(id, urlImage, title, description, rating,categories = null){
 function limitWords(str, limit){
     const words = str.split(" ");
     if (words.length <= limit) return str;
-    return words.slice(0,limit).join(" ") + "...";
+    return words.slice(0, limit).join(" ") + "...";
 }
 
 function renderCard(fullCard, category){
@@ -94,7 +94,6 @@ const state = {
 async function fetchTopRatedContent() {
     const category = "Rating Tertinggi";
     
-    // ✅ Prevent duplicate fetch
     if (state.loadedCategories.has(category)) {
         console.log(`✅ Category "${category}" already loaded`);
         return;
@@ -105,9 +104,9 @@ async function fetchTopRatedContent() {
     try {
         console.log(`📥 Fetching top rated content...`);
         
-        // Fetch semua content
+        // ✅ FIXED: pakai url_path langsung dari content_duplicate, tidak pakai images(image_url)
         const contentRes = await fetch(
-            `${SUPABASE_URL}/rest/v1/content?select=id,title,description,type,images(image_url)`,
+            `${SUPABASE_URL}/rest/v1/content_duplicate?select=id,title,description,type,url_path,tmdb_id`,
             {
                 headers: {
                     apikey: SUPABASE_KEY,
@@ -164,27 +163,25 @@ async function fetchTopRatedContent() {
         const topRatedContent = contentWithAvgRatings
             .filter(item => item !== null && item.avgRating !== undefined)
             .sort((a, b) => b.avgRating - a.avgRating)
-            .slice(0, 10); // Ambil top 10 saja
+            .slice(0, 10);
         
         if (topRatedContent.length === 0) {
-            console.log(`⚠️ No rated content found`);
             state.loadedCategories.delete(category);
             return;
         }
         
-        console.log(`✅ Found ${topRatedContent.length} top rated content`);
         
         // Build cards
         let fullCard = "";
         topRatedContent.forEach(item => {
-            const img = item.images?.[0]?.image_url || SEMENTARAIMG;
+            // ✅ FIXED: pakai url_path langsung, fallback ke SEMENTARAIMG
+            const img = item.url_path || SEMENTARAIMG;
             const desc = item.description ?? "No description yet...";
             const rating = item.avgRating.toFixed(1);
             
-            fullCard += makeCard(item.id, SEMENTARAIMG, item.title, desc, rating);
+            fullCard += makeCard(item.tmdb_id, img, item.title, desc, rating);
         });
         
-        // Render di paling atas (sebelum kategori lain)
         renderTopRatedCard(fullCard, category);
         
     } catch (error) {
@@ -198,11 +195,10 @@ function renderTopRatedCard(fullCard, category) {
     const existingCategory = parent.querySelector(`[data-category="${category}"]`);
     
     if (existingCategory) {
-        console.warn(`⚠️ Category "${category}" already rendered, skipping...`);
         return;
     }
     
-  const content = `<div class="content top-rated" data-category="${category}" style="
+    const content = `<div class="content top-rated" data-category="${category}" style="
     margin-top: 80px; 
     margin-bottom: 50px;
     background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 140, 0, 0.05) 100%);
@@ -214,7 +210,6 @@ function renderTopRatedCard(fullCard, category) {
     position: relative;
     overflow: hidden;
 ">
-    <!-- Decorative shine effect -->
     <div style="
         position: absolute;
         top: -50%;
@@ -229,7 +224,6 @@ function renderTopRatedCard(fullCard, category) {
         animation: shine 3s infinite;
     "></div>
     
-    <!-- Decorative corner stars -->
     <div style="
         position: absolute;
         top: 15px;
@@ -239,7 +233,7 @@ function renderTopRatedCard(fullCard, category) {
         animation: pulse-star 2s ease-in-out infinite;
     ">⭐</div>
     
-    <div style="position: relative; z-index: 1; ">
+    <div style="position: relative; z-index: 1;">
         <h1 style="
             font-size: 2.5em;
             background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FFD700 100%);
@@ -297,35 +291,23 @@ function renderTopRatedCard(fullCard, category) {
     0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
     100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
 }
-
 @keyframes pulse-star {
-    0%, 100% { 
-        transform: scale(1);
-        opacity: 0.3;
-    }
-    50% { 
-        transform: scale(1.2);
-        opacity: 0.6;
-    }
+    0%, 100% { transform: scale(1); opacity: 0.3; }
+    50% { transform: scale(1.2); opacity: 0.6; }
 }
-
 @keyframes rotate-star {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
-
-/* Styling khusus untuk cards di dalam top-rated */
 .top-rated .review-card {
     border: 1px solid rgba(255, 215, 0, 0.2);
     transition: all 0.3s ease;
 }
-
 .top-rated .review-card:hover {
     border-color: rgba(255, 215, 0, 0.5);
     box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3);
     transform: translateY(-5px) scale(1.02);
 }
-
 .top-rated .review-card .rating {
     color: #FFD700;
     text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
@@ -333,7 +315,6 @@ function renderTopRatedCard(fullCard, category) {
 }
 </style>`;
     
-    // Insert di paling awal (setelah search header jika ada)
     const firstCategory = parent.querySelector('[data-category]');
     if (firstCategory) {
         firstCategory.insertAdjacentHTML('beforebegin', content);
@@ -341,7 +322,6 @@ function renderTopRatedCard(fullCard, category) {
         parent.insertAdjacentHTML('beforeend', content);
     }
     
-    console.log(`✅ Rendered top rated category at the top`);
 }
 
 // ========================================
@@ -349,7 +329,6 @@ function renderTopRatedCard(fullCard, category) {
 // ========================================
 
 async function fetchData(category){
-    // ✅ Prevent duplicate fetch
     if (state.loadedCategories.has(category)) {
         console.log(`✅ Category "${category}" already loaded`);
         return;
@@ -360,9 +339,9 @@ async function fetchData(category){
     try {
         console.log(`📥 Fetching category: ${category}`);
         
-        // Fetch content
+        // ✅ FIXED: pakai url_path langsung, tidak pakai images(image_url)
         const contentRes = await fetch(
-            `${SUPABASE_URL}/rest/v1/content?type=eq.${category}&select=id,title,description,images(image_url)`,
+            `${SUPABASE_URL}/rest/v1/content_duplicate?type=eq.${category}&select=id,title,description,url_path`,
             {
                 headers: {
                     apikey: SUPABASE_KEY,
@@ -417,7 +396,7 @@ async function fetchData(category){
             }
         }));
         
-        // Sort: yang punya rating dulu dengan random order
+        // Sort: yang punya rating dulu
         contentWithRatings.sort((a, b) => {
             if (a.hasRating && !b.hasRating) return -1;
             if (!a.hasRating && b.hasRating) return 1;
@@ -427,15 +406,13 @@ async function fetchData(category){
         // Build cards
         let fullCard = "";
         contentWithRatings.forEach(item => {
-            const img = item.images?.[0]?.image_url || SEMENTARAIMG;
+            // ✅ FIXED: pakai url_path langsung
+            const img = item.url_path || SEMENTARAIMG;
             const desc = item.description ?? "No description yet...";
             const rating = item.avgRating ?? "?";
-            fullCard += makeCard(item.id, SEMENTARAIMG, item.title, desc, rating);
-
-
+            fullCard += makeCard(item.id, img, item.title, desc, rating);
         });
         
-        // Render
         renderCard(fullCard, category);
         
     } catch (error) {
@@ -449,7 +426,6 @@ async function fetchData(category){
 // ========================================
 
 async function initializeContent() {
-    // ✅ Prevent multiple initialization
     if (state.isInitialized) {
         console.warn('⚠️ Content already initialized');
         return;
@@ -466,9 +442,7 @@ async function initializeContent() {
     try {
         console.log('🚀 Initializing content loader...');
         
-        // ✅ Clear existing content BUT keep search header
         if (parent) {
-            // Remove only category sections, not the search header
             const categories = parent.querySelectorAll('[data-category]');
             categories.forEach(cat => cat.remove());
         } else {
@@ -477,59 +451,26 @@ async function initializeContent() {
         }
         
         state.loadedCategories.clear();
-        
-        // Fetch categories
-        const res = await fetch(
-            `${SUPABASE_URL}/rest/v1/content?select=type`,
-            {
-                headers: {
-                    apikey: SUPABASE_KEY,
-                    Authorization: `Bearer ${SUPABASE_KEY}`
-                }
-            }
-        );
-        
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        
-        const data = await res.json();
-        const rawTypes = data.map(item => item.type);
-        const types = [...new Set(rawTypes)];
-        
-        console.log(`📦 Found ${types.length} categories:`, types);
 
         await fetchTopRatedContent();
-        await getTrending("movie");
-        await getTrending("tv");
-        await getTrending("anime");
+        await Promise.all(["movie", "tv", "anime"].map(type => getTrending(type)));
         
-        // Fetch all categories
-        await Promise.all(types.map(type => fetchData(type)));
-        
-        // Hide loading
         const loadingGif = document.querySelector('.loading-gif');
-        if (loadingGif) {
-            loadingGif.style.display = 'none';
-        }
+        if (loadingGif) loadingGif.style.display = 'none';
         
-        // Initialize scroll
-        if (typeof initSmoothScroll === 'function') {
-            initSmoothScroll();
-        }
+        if (typeof initSmoothScroll === 'function') initSmoothScroll();
         
         console.log('✅ All categories loaded!');
     } catch (error) {
         console.error('❌ Error loading content:', error);
         
         const loadingGif = document.querySelector('.loading-gif');
-        if (loadingGif) {
-            loadingGif.style.display = 'none';
-        }
+        if (loadingGif) loadingGif.style.display = 'none';
         
         if (parent) {
             parent.insertAdjacentHTML('beforeend', '<div style="text-align: center; padding: 50px; color: #fff;">Failed to load content. Please refresh the page.</div>');
         }
         
-        // Reset flags untuk allow retry
         state.isInitialized = false;
         
     } finally {
@@ -541,7 +482,6 @@ async function initializeContent() {
 // START
 // ========================================
 
-// ✅ Wait for DOM
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initializeContent, { once: true });
 } else {
@@ -552,74 +492,93 @@ if (document.readyState === 'loading') {
 // GLOBAL FUNCTIONS
 // ========================================
 
-window.goToDetail = async function(contentId,categories) {
-    console.log("dll")
-    try{
-        const {data, error} = await supabase
-        .from("content_duplicate")
-        .select("*")
-        .eq("tmdb_id", contentId);
-        if(data.length > 0){
-            console.log(data)
-            msgBox.info("Cek tabel 'content_duplicate'")
-        } else {
-            try {
-                let dataContent, dataTitle, urlIMG,year;
-                if (categories.toLowerCase() === "movie") {
-                    const url = `https://api.themoviedb.org/3/movie/${contentId}?api_key=${API_TMDB}&language=en-US`
-                    const res = await fetch(url);
-                    dataContent = await res.json();
-                    dataTitle = dataContent.title;
-                    year = dataContent.release_date
-                
-            } else if(categories.toLowerCase() === "tv") {
-                    const url = `https://api.themoviedb.org/3/tv/${contentId}?api_key=${API_TMDB}&language=en-US`
-                    const res = await fetch(url);
-                    dataContent = await res.json();
-                    dataTitle = dataContent.name;
-                    year = dataContent.first_air_date
-                }
-                urlIMG =  "https://image.tmdb.org/t/p/w500" + dataContent.poster_path;
-                const urlBackdrop = dataContent.backdrop_path ? "https://image.tmdb.org/t/p/original"+ dataContent.backdrop_path : urlIMG
-                const stat = dataContent.status
-                const dataToInsert = {
-                    tmdb_id: dataContent.id,
-                    title: dataTitle,
-                    description: dataContent.overview,
-                    release_year: year.split("-")[0],
-                    url_path: urlIMG,
-                    url_backdrop_path: urlBackdrop,
-                    type: stat,
-                }
-                console.log(dataContent)
+window.goToDetail = async function(contentId, categories) {
+    try {
+        // ✅ FIXED: cek di content_duplicate
+        const { data, error } = await supabase
+            .from("content_duplicate")
+            .select("*")
+            .eq("tmdb_id", contentId);
 
+        if (data && data.length > 0) {
+            // Konten sudah ada, langsung redirect
+            console.log("Konten sudah ada di DB:", data);
+            await delay(500);
+            window.location.href = `detail.html?id=${contentId}`;
+            return;
+        }
 
-                const {error} = await supabase
-                .from('content_duplicate')
-                .insert([dataToInsert])
-                
-                if (error) {
-                    msgBox.error("Gagal memuwwat")
-                    console.log(error)
-                    return null;
-                } msgBox.success('berhasil insert')
-                msgBox.info("Cek tabel 'content_duplicate'")
-                
-            } catch(error) {
-                msgBox.error("Gagal memuat")
-                console.error(error)
-            }
-        }await delay(1000)
+        // Konten belum ada, fetch dari TMDB lalu insert
+        try {
+            let dataContent, dataTitle, year;
+
+            if (categories.toLowerCase() === "movie") {
+                const url = `https://api.themoviedb.org/3/movie/${contentId}?api_key=${API_TMDB}&language=en-US`;
+                const res = await fetch(url);
+                dataContent = await res.json();
+                dataTitle = dataContent.title;
+                year = dataContent.release_date;
+            } else if (categories.toLowerCase() === "tv") {
+                const url = `https://api.themoviedb.org/3/tv/${contentId}?api_key=${API_TMDB}&language=en-US`;
+                const res = await fetch(url);
+                dataContent = await res.json();
+                dataTitle = dataContent.name;
+                year = dataContent.first_air_date;
+            } else {
+                // Kategori tidak dikenal, langsung redirect saja
+                await delay(500);
                 window.location.href = `detail.html?id=${contentId}`;
-    } catch(error){
-        msgBox.error("Gagal memuat")
+                return;
+            }
+
+            const urlIMG = "https://image.tmdb.org/t/p/w500" + dataContent.poster_path;
+            const urlBackdrop = dataContent.backdrop_path
+                ? "https://image.tmdb.org/t/p/original" + dataContent.backdrop_path
+                : urlIMG;
+
+            const dataToInsert = {
+                tmdb_id: dataContent.id,
+                title: dataTitle,
+                description: dataContent.overview,
+                release_year: year ? year.split("-")[0] : null,
+                url_path: urlIMG,
+                url_backdrop_path: urlBackdrop,
+                type: categories, // ✅ pakai categories (movie/tv), bukan dataContent.status
+            };
+
+            console.log("Inserting ke content_duplicate:", dataToInsert);
+
+            // ✅ FIXED: insert ke content_duplicate
+            const { error: insertError } = await supabase
+                .from('content_duplicate')
+                .insert([dataToInsert]);
+
+            if (insertError) {
+                msgBox.error("Gagal menyimpan konten");
+                console.error(insertError);
+                return; // ✅ Stop jika gagal, tidak redirect
+            }
+
+            msgBox.success('Konten berhasil disimpan!');
+
+        } catch (fetchError) {
+            msgBox.error("Gagal memuat data dari TMDB");
+            console.error(fetchError);
+            return; // ✅ Stop jika gagal
+        }
+
+        await delay(500);
+        window.location.href = `detail.html?id=${contentId}`;
+
+    } catch (error) {
+        msgBox.error("Terjadi kesalahan");
+        console.error(error);
     }
 };
 
 function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
-
 
 // ========================================
 // DEBUG HELPERS
@@ -634,63 +593,91 @@ window.debugExplore = function() {
     console.log('Total cards:', parent.querySelectorAll('.review-card').length);
 };
 
-const API_TMDB = 'a826847f8ba8f3661c9d8b3d3bc09469'
-const API_TMDB_READ = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhODI2ODQ3ZjhiYThmMzY2MWM5ZDhiM2QzYmMwOTQ2OSIsIm5iZiI6MTc3MTExNTI4NC44NTYsInN1YiI6IjY5OTExMzE0M2ZiYWUxNWRmMzJhZTljYSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.OJvv5g-gxdECtrP_ZZ_9foQipmPPw-1HUn05zIh7pmQ'
+// ========================================
+// TMDB CONFIG
+// ========================================
+
+const API_TMDB = 'a826847f8ba8f3661c9d8b3d3bc09469';
+const API_TMDB_READ = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhODI2ODQ3ZjhiYThmMzY2MWM5ZDhiM2QzYmMwOTQ2OSIsIm5iZiI6MTc3MTExNTI4NC44NTYsInN1YiI6IjY5OTExMzE0M2ZiYWUxNWRmMzJhZTljYSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.OJvv5g-gxdECtrP_ZZ_9foQipmPPw-1HUn05zIh7pmQ';
 
 const options = {
-  method: 'GET',
-  headers: {
-    accept: 'application/json',
-    Authorization: `Bearer ${API_TMDB_READ}`
-  }
+    method: 'GET',
+    headers: {
+        accept: 'application/json',
+        Authorization: `Bearer ${API_TMDB_READ}`
+    }
 };
 
 async function getTrending(category) {
-  try {
-    let res,data,movies;
-    
-    if (category.toLowerCase() === "anime"){
-        res = await fetch(
-        `https://api.themoviedb.org/3/discover/tv?with_genres=16&with_origin_country=JP&sort_by=popularity.desc`,
-        options
+    try {
+        let res;
+
+        if (category.toLowerCase() === "anime") {
+            res = await fetch(
+                `https://api.themoviedb.org/3/discover/tv?with_genres=16&with_origin_country=JP&sort_by=popularity.desc`,
+                options
+            );
+        } else {
+            res = await fetch(
+                `https://api.themoviedb.org/3/trending/${category}/week`,
+                options
+            );
+        }
+
+        if (!res.ok) throw new Error("Response not OK");
+
+        const data = await res.json();
+        const movies = data.results;
+        const categoryHandler = category.toLowerCase() === "anime" ? "tv" : category;
+
+        // ✅ 1 request: ambil semua content_duplicate yang tmdb_id-nya cocok
+        const tmdbIds = movies.map(m => m.id).join(',');
+        const contentRes = await fetch(
+            `${SUPABASE_URL}/rest/v1/content_duplicate?tmdb_id=in.(${tmdbIds})&select=id,tmdb_id`,
+            { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }
         );
-    } else{
-        res = await fetch(
-        `https://api.themoviedb.org/3/trending/${category}/week`,
-        options
-        
-    );}   
+        const contentData = await contentRes.json();
 
-    if (!res.ok) {
-        throw new Error("Response not OK");
+        // Map: tmdb_id -> id (dari content_duplicate)
+        const tmdbToDbId = {};
+        contentData.forEach(c => { tmdbToDbId[c.tmdb_id] = c.id; });
+
+        // ✅ 1 request: ambil semua rating untuk content yang ada di DB
+        const dbIds = contentData.map(c => c.id).join(',');
+        let ratingMap = {}; // { dbId: avgRating }
+
+        if (dbIds.length > 0) {
+            const ratingRes = await fetch(
+                `${SUPABASE_URL}/rest/v1/rating?content_id=in.(${dbIds})&select=content_id,rating`,
+                { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }
+            );
+            const ratingData = await ratingRes.json();
+
+            // Kelompokkan rating per content_id lalu hitung avg
+            const ratingGroups = {};
+            ratingData.forEach(r => {
+                if (!ratingGroups[r.content_id]) ratingGroups[r.content_id] = [];
+                ratingGroups[r.content_id].push(r.rating);
+            });
+            Object.entries(ratingGroups).forEach(([contentId, ratings]) => {
+                const avg = ratings.reduce((a, b) => a + b, 0) / ratings.length;
+                ratingMap[contentId] = avg.toFixed(1);
+            });
+        }
+
+        // Build cards
+        let fullCard = "";
+        movies.forEach(item => {
+            const urlIMG = "https://image.tmdb.org/t/p/w500" + item.poster_path;
+            const dbId = tmdbToDbId[item.id];
+            const displayRating = (dbId && ratingMap[dbId]) ? ratingMap[dbId] : "?";
+            fullCard += makeCard(item.id, urlIMG, item.title || item.name, item.overview, displayRating, categoryHandler);
+        });
+
+        renderCard(fullCard, `Trending ${category} di TMDb`);
+
+    } catch (err) {
+        console.error(err);
+        msgBox.error("ERROR TMDB");
     }
-    data = await res.json();
-    movies = data.results;
-    
-    
-
-    
-
-    
-    let fullCard = ""
-    var categoryHandler
-
-    if (category.toLowerCase() === "anime"){
-        categoryHandler = "tv"
-    } else {
-        categoryHandler = category
-    }
-
-    movies.forEach( item =>{
-        const urlIMG =  "https://image.tmdb.org/t/p/w500" + item.poster_path;
-        fullCard += makeCard(item.id, urlIMG, item.title || item.name, item.overview, item.vote_average, categoryHandler);
-    })
-    renderCard(fullCard, `Trending ${category} di TMDb`)
-  } catch (err) {
-    console.error(err);
-    msgBox.error("ERROR TMDB");
-  }
-
-  
 }
-
