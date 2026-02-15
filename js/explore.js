@@ -1,6 +1,8 @@
 // ========================================
 // EXPLORE PAGE - CONTENT LOADER
 // ========================================
+import msgBox from "./component/alert.js"
+import { supabase } from "./supabase-client.js";
 
 const parent = document.querySelector(".content-container");
 
@@ -422,7 +424,6 @@ async function fetchData(category){
             const img = item.images?.[0]?.image_url || SEMENTARAIMG;
             const desc = item.description ?? "No description yet...";
             const rating = item.avgRating ?? "?";
-            
             fullCard += makeCard(item.id, SEMENTARAIMG, item.title, desc, rating);
 
 
@@ -491,6 +492,7 @@ async function initializeContent() {
         console.log(`📦 Found ${types.length} categories:`, types);
 
         await fetchTopRatedContent();
+        await getTrending();
         
         // Fetch all categories
         await Promise.all(types.map(type => fetchData(type)));
@@ -507,7 +509,6 @@ async function initializeContent() {
         }
         
         console.log('✅ All categories loaded!');
-        
     } catch (error) {
         console.error('❌ Error loading content:', error);
         
@@ -543,8 +544,48 @@ if (document.readyState === 'loading') {
 // GLOBAL FUNCTIONS
 // ========================================
 
-window.goToDetail = function(contentId) {
-    window.location.href = `detail.html?id=${contentId}`;
+window.goToDetail = async function(contentId) {
+    try{
+        const {data, error} = await supabase
+        .from("content_duplicate")
+        .select("*")
+        .eq("tmdb_id", contentId);
+
+        if(data < 0){
+            console.log(data)
+        } else {
+            const url = `https://api.themoviedb.org/3/movie/${contentId}?api_key=${API_TMDB}&language=en-US`
+            try {
+                const res = await fetch(url);
+                const data = await res.json();
+                const urlIMG =  "https://image.tmdb.org/t/p/w500" + data.poster_path;
+
+
+                const dataToInsert = {
+                    tmdb_id: data.id,
+                    title: data.title,
+                    description: data.overview,
+                    created_at: data.release_date,
+                    url_path: urlIMG
+                }
+
+
+                const {error} = await supabaseAdmin
+                .from('content_duplicate')
+                .insert([dataToInsert])
+                
+                if (error) {
+                    msgBox.error("Gagal memuat")
+                    return null;
+                } msgBox.success('berhasil insert')
+            } catch {
+                msgBox.error("Gagal memuat")
+            }
+        }
+        // window.location.href = `detail.html?id=${contentId}`;
+    } catch(error){
+        msgBox.error("Gagal memuat")
+    }
 };
 
 // ========================================
@@ -559,3 +600,43 @@ window.debugExplore = function() {
     console.log('Rendered categories:', parent.querySelectorAll('[data-category]').length);
     console.log('Total cards:', parent.querySelectorAll('.review-card').length);
 };
+
+const API_TMDB = 'a826847f8ba8f3661c9d8b3d3bc09469'
+const API_TMDB_READ = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhODI2ODQ3ZjhiYThmMzY2MWM5ZDhiM2QzYmMwOTQ2OSIsIm5iZiI6MTc3MTExNTI4NC44NTYsInN1YiI6IjY5OTExMzE0M2ZiYWUxNWRmMzJhZTljYSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.OJvv5g-gxdECtrP_ZZ_9foQipmPPw-1HUn05zIh7pmQ'
+
+const options = {
+  method: 'GET',
+  headers: {
+    accept: 'application/json',
+    Authorization: `Bearer ${API_TMDB_READ}`
+  }
+};
+
+async function getTrending() {
+  try {
+    const res = await fetch(
+      'https://api.themoviedb.org/3/trending/movie/week',
+      options
+    );
+
+    if (!res.ok) {
+      throw new Error("Response not OK");
+    }
+
+    const data = await res.json();
+    const movies = data.results; // bukan result
+    let fullCard = ""
+    movies.forEach( item =>{
+        const urlIMG =  "https://image.tmdb.org/t/p/w500" + item.poster_path;
+        fullCard += makeCard(item.id, urlIMG, item.title, item.overview, item.vote_average);
+    })
+    renderCard(fullCard, "Trending in TMDb")
+    
+  } catch (err) {
+    console.error(err);
+    msgBox.error("ERROR TMDB");
+  }
+
+  
+}
+
