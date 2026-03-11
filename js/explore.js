@@ -423,7 +423,7 @@ async function fetchData(category){
 // ========================================
 
 async function initializeContent() {
-    msgBox.info("for better experience please use desktop")
+    msgBox.info("For the best experience, please use a desktop device.")
     if (state.isInitialized) {
         console.warn('⚠️ Content already initialized');
         return;
