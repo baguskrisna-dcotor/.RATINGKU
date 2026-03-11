@@ -423,6 +423,7 @@ async function fetchData(category){
 // ========================================
 
 async function initializeContent() {
+    msgBox.info("for better experience please use desktop")
     if (state.isInitialized) {
         console.warn('⚠️ Content already initialized');
         return;
@@ -522,7 +523,6 @@ window.goToDetail = async function(contentId, categories) {
                 dataTitle = dataContent.name;
                 year = dataContent.first_air_date;
             } else {
-                // Kategori tidak dikenal, langsung redirect saja
                 await delay(500);
                 window.location.href = `detail.html?id=${contentId}`;
                 return;
@@ -540,26 +540,24 @@ window.goToDetail = async function(contentId, categories) {
                 release_year: year ? year.split("-")[0] : null,
                 url_path: urlIMG,
                 url_backdrop_path: urlBackdrop,
-                type: categories, // ✅ pakai categories (movie/tv), bukan dataContent.status
+                type: categories, 
             };
 
-            console.log("Inserting ke content_duplicate:", dataToInsert);
-
-            // ✅ FIXED: insert ke content_duplicate
             const { error: insertError } = await supabase
                 .from('content_duplicate')
                 .insert([dataToInsert]);
 
             if (insertError) {
-                msgBox.error("Gagal menyimpan konten");
+                msgBox.error("Gagal");
+                msgBox.error("Coba lagi nanti");
                 console.error(insertError);
-                return; // ✅ Stop jika gagal, tidak redirect
+                return;
             }
 
-            msgBox.success('Konten berhasil disimpan!');
+            msgBox.info('Load content');
 
         } catch (fetchError) {
-            msgBox.error("Gagal memuat data dari TMDB");
+            msgBox.error("Gagal memuat data");
             console.error(fetchError);
             return; // ✅ Stop jika gagal
         }
@@ -627,7 +625,6 @@ async function getTrending(category) {
         const movies = data.results;
         const categoryHandler = category.toLowerCase() === "anime" ? "tv" : category;
 
-        // ✅ 1 request: ambil semua content_duplicate yang tmdb_id-nya cocok
         const tmdbIds = movies.map(m => m.id).join(',');
         const contentRes = await fetch(
             `${SUPABASE_URL}/rest/v1/content_duplicate?tmdb_id=in.(${tmdbIds})&select=id,tmdb_id`,
@@ -635,11 +632,9 @@ async function getTrending(category) {
         );
         const contentData = await contentRes.json();
 
-        // Map: tmdb_id -> id (dari content_duplicate)
         const tmdbToDbId = {};
         contentData.forEach(c => { tmdbToDbId[c.tmdb_id] = c.id; });
 
-        // ✅ 1 request: ambil semua rating untuk content yang ada di DB
         const dbIds = contentData.map(c => c.id).join(',');
         let ratingMap = {}; // { dbId: avgRating }
 
@@ -650,7 +645,6 @@ async function getTrending(category) {
             );
             const ratingData = await ratingRes.json();
 
-            // Kelompokkan rating per content_id lalu hitung avg
             const ratingGroups = {};
             ratingData.forEach(r => {
                 if (!ratingGroups[r.content_id]) ratingGroups[r.content_id] = [];
@@ -662,7 +656,6 @@ async function getTrending(category) {
             });
         }
 
-        // Build cards
         let fullCard = "";
         movies.forEach(item => {
             const urlIMG = "https://image.tmdb.org/t/p/w500" + item.poster_path;

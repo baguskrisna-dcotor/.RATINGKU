@@ -54,7 +54,24 @@
     color: transparent;
     margin: 0;
 }
+h3 {
+  font-family: var(--font-default);
+  font-size: clamp(14px, 2vw, 25px);
+  font-weight: 700;
+  letter-spacing: 1px;
 
+  outline: solid #8bc5ff;
+
+  background: #0b1f4b; /* dark blue */
+  color: #8bc5ff;      /* light blue */
+
+  padding: 8px 16px;
+  border-radius: 8px;
+
+  text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+
+  margin: 0;
+}
 .textcontent p {
     font-family: var(--font-default);
     font-size: clamp(14px, 2.2vw, 30px);
@@ -66,7 +83,7 @@
     display: flex;
     justify-content: center;
     gap: clamp(8px, 2vw, 20px);
-    height: auto;
+    height: 50px;
     width: max-content;
     margin: 0 auto;
     position: relative;

@@ -202,7 +202,7 @@ function renderRatings(ratings, username, userPP) {
                 <div class="rating-content">
                     <div class="rating-header">
                         <div class="rating-avatar">
-                            <img src="${userPP}" alt="${username}">
+                            <img src="${userPP}" alt="${username}" loading="lazy">
                         </div>
                         <div class="rating-user-info">
                             <h3>${username}</h3>
@@ -215,7 +215,7 @@ function renderRatings(ratings, username, userPP) {
                     ${rating.review ? `<p class="rating-review">${rating.review}</p>` : ''}
                 </div>
                 <div class="rating-image">
-                    <img src="${contentImage}" alt="${contentTitle}">
+                    <img src="${contentImage}" alt="${contentTitle}" loading="lazy">
                 </div>
             </div>
         `;

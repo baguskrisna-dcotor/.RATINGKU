@@ -25,7 +25,12 @@ body {
 .title{
     font-family: var(--font-title);
 }
-
+.aiimage{
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    object-fit: cover;
+}
 .no-copy {
     -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */
@@ -100,9 +105,139 @@ body {
     color: white;
     font-size: 24px;
     font-family: var(--font-title);
-    z-index: 9999;
+    z-index: 9999999;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     gap: 20px;
+    text-align: center;
 }
+
+
+.label {
+  font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase;
+  color: rgba(6,182,212,0.5); font-weight: 600;
+}
+
+/* ─── VARIANT 1: Primary ─── */
+.raptor-btn {
+  display: inline-flex; align-items: center; gap: 12px;
+  padding: 14px 28px;
+  background: linear-gradient(135deg, #1d4ed8 0%, #0891b2 100%);
+  border-radius: 12px;
+  text-decoration: none; color: white;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700; font-size: 0.95rem;
+  border: none; cursor: pointer;
+  position: relative; overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 6px 24px rgba(29,78,216,0.4), 0 0 0 1px rgba(6,182,212,0.2);
+  white-space: nowrap;
+  text-decoration: none;
+}
+.raptor-btn::after {
+  content: '';
+  position: absolute; top: -50%; left: -75%;
+  width: 50%; height: 200%;
+  background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.15) 50%, transparent 60%);
+  transition: left 0.6s ease;
+}
+.raptor-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(29,78,216,0.55); }
+.raptor-btn:hover::after { left: 130%; }
+.raptor-btn:active { transform: scale(0.97); }
+
+.raptor-btn .r-icon {
+  width: 26px; height: 26px;
+  background: rgba(255,255,255,0.15); border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.9rem; flex-shrink: 0;
+}
+.raptor-btn .r-icon img {
+  width: 18px; height: 18px; object-fit: contain; filter: brightness(10);
+}
+
+.raptor-btn .r-label { display: flex; flex-direction: column; line-height: 1.2; }
+.raptor-btn .r-sub { font-size: 0.68rem; opacity: 0.7; font-weight: 400; letter-spacing: 0.05em; }
+.raptor-btn .r-main { font-size: 0.95rem; }
+
+.raptor-btn .r-arrow {
+  margin-left: 4px; opacity: 0.7;
+  transition: transform 0.2s, opacity 0.2s;
+}
+.raptor-btn:hover .r-arrow { transform: translateX(4px); opacity: 1; }
+
+/* ─── VARIANT 2: Outline ─── */
+.raptor-btn-outline {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 12px 24px;
+  border: 1.5px solid rgba(6,182,212,0.4);
+  border-radius: 10px;
+  text-decoration: none; color: #e0f2fe;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600; font-size: 0.9rem;
+  background: rgba(6,182,212,0.05);
+  backdrop-filter: blur(8px);
+  cursor: pointer; transition: all 0.2s; white-space: nowrap;
+}
+.raptor-btn-outline:hover {
+  border-color: #06b6d4; color: white;
+  background: rgba(6,182,212,0.12);
+  box-shadow: 0 0 24px rgba(6,182,212,0.15);
+  transform: translateY(-1px);
+}
+.raptor-btn-outline .pulse {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #06b6d4;
+  box-shadow: 0 0 8px #06b6d4;
+  animation: p 1.8s infinite;
+}
+@keyframes p { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+/* ─── VARIANT 3: Minimal ─── */
+.raptor-btn-minimal {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 9px 20px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 100px;
+  text-decoration: none; color: rgba(240,249,255,0.8);
+  font-family: 'Outfit', sans-serif;
+  font-weight: 500; font-size: 0.85rem;
+  cursor: pointer; transition: all 0.2s; white-space: nowrap;
+}
+.raptor-btn-minimal:hover {
+  background: rgba(255,255,255,0.09);
+  color: white; border-color: rgba(255,255,255,0.2);
+}
+.raptor-btn-minimal img {
+  width: 16px; height: 16px; object-fit: contain; border-radius: 4px;
+}
+
+/* ─── FAB ─── */
+.raptor-fab {
+    margin-bottom: 70px;
+  position: fixed; bottom: 24px; right: 24px;
+  display: inline-flex; align-items: center; gap: 0;
+  padding: 13px;
+  background: linear-gradient(135deg, #1d4ed8, #0891b2);
+  border-radius: 50%; border: none;
+  color: white; cursor: pointer; z-index: 9999;
+  box-shadow: 0 6px 28px rgba(29,78,216,0.45);
+  transition: border-radius 0.3s, padding 0.3s, box-shadow 0.2s;
+  text-decoration: none; white-space: nowrap; overflow: hidden;
+  font-family: 'Outfit', sans-serif;
+}
+.raptor-fab:hover {
+  border-radius: 14px; padding: 13px 20px;
+  box-shadow: 0 10px 36px rgba(29,78,216,0.6);
+}
+.raptor-fab img { width: 24px; height: 24px; object-fit: contain; filter: brightness(10); flex-shrink:0; }
+.raptor-fab .fab-txt {
+  max-width: 0; overflow: hidden;
+  font-weight: 700; font-size: 0.88rem;
+  transition: max-width 0.3s ease, margin 0.3s ease;
+}
+.raptor-fab:hover .fab-txt { max-width: 150px; margin-left: 10px; }
+
+/* Demo wrapper */
+.row { display:flex; flex-wrap:wrap; gap:16px; align-items:center; justify-content:center; }

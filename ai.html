@@ -1,0 +1,1390 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Raptor AI — RATINGKU</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #080c14;
+        --surface: #0f1520;
+        --panel: #161d2e;
+        --border: rgba(255, 255, 255, 0.07);
+        --blue: #2563eb;
+        --blue-lt: #3b82f6;
+        --cyan: #06b6d4;
+        --accent: #f97316;
+        --white: #f0f6ff;
+        --muted: rgba(240, 246, 255, 0.4);
+        --font: "Outfit", sans-serif;
+        --mono: "JetBrains Mono", monospace;
+        --r: 14px;
+      }
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+        background: var(--bg);
+        color: var(--white);
+        font-family: var(--font);
+        overflow: hidden;
+      }
+
+      /* ── APP SHELL ───────────────── */
+      .app {
+        display: flex;
+        height: 100vh;
+        width: 100vw;
+      }
+
+      /* ── SIDEBAR ─────────────────── */
+      .sidebar {
+        width: 260px;
+        flex-shrink: 0;
+        background: var(--surface);
+        border-right: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.3s ease;
+        z-index: 20;
+      }
+      .sb-head {
+        padding: 18px 16px 12px;
+        border-bottom: 1px solid var(--border);
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 2px;
+      }
+      .brand-logo {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, var(--blue), var(--cyan));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.95rem;
+        font-weight: 800;
+        color: #fff;
+        flex-shrink: 0;
+        overflow: hidden;
+      }
+      .brand-logo img {
+        width: 22px;
+        height: 22px;
+        object-fit: contain;
+        filter: brightness(10);
+      }
+      .brand-name {
+        font-size: 1.1rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        background: linear-gradient(90deg, var(--white) 50%, var(--cyan));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .brand-by {
+        font-size: 0.65rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+        font-weight: 500;
+        padding-left: 42px;
+        margin-top: -2px;
+      }
+
+      .btn-new {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+        margin-top: 12px;
+        padding: 9px 12px;
+        background: rgba(37, 99, 235, 0.12);
+        border: 1px solid rgba(37, 99, 235, 0.3);
+        border-radius: 9px;
+        color: var(--blue-lt);
+        font-family: var(--font);
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .btn-new:hover {
+        background: rgba(37, 99, 235, 0.22);
+        border-color: var(--blue-lt);
+      }
+
+      .sb-section {
+        padding: 12px 14px 4px;
+        font-size: 0.65rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .history {
+        flex: 1;
+        overflow-y: auto;
+        padding: 0 8px;
+      }
+      .history::-webkit-scrollbar {
+        width: 3px;
+      }
+      .history::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
+      }
+      .h-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.83rem;
+        color: var(--muted);
+        transition: all 0.15s;
+        margin-bottom: 1px;
+      }
+      .h-item:hover,
+      .h-item.active {
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--white);
+      }
+      .h-item .hi {
+        font-size: 0.78rem;
+        flex-shrink: 0;
+      }
+      .h-item .ht {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .sb-foot {
+        padding: 12px 14px;
+        border-top: 1px solid var(--border);
+        font-size: 0.75rem;
+        color: var(--muted);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .sb-foot::before {
+        content: "";
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #22c55e;
+        box-shadow: 0 0 6px #22c55e;
+        flex-shrink: 0;
+      }
+
+      /* ── MAIN ───────────────────── */
+      .chat-area {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        position: relative;
+      }
+
+      /* topbar */
+      .topbar {
+        padding: 12px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: rgba(8, 12, 20, 0.85);
+        backdrop-filter: blur(12px);
+        flex-shrink: 0;
+      }
+      .topbar-l {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .menu-btn {
+        display: none;
+        background: none;
+        border: none;
+        color: var(--muted);
+        cursor: pointer;
+        font-size: 1.15rem;
+        padding: 4px;
+      }
+      .model-pill {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 100px;
+        padding: 5px 14px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--white);
+        cursor: default;
+      }
+      .model-pill .dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--cyan);
+        box-shadow: 0 0 6px var(--cyan);
+        animation: blink 2s infinite;
+      }
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.3;
+        }
+      }
+      .topbar-r {
+        display: flex;
+        gap: 6px;
+      }
+      .icon-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 7px;
+        background: none;
+        border: 1px solid var(--border);
+        color: var(--muted);
+        cursor: pointer;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.15s;
+      }
+      .icon-btn:hover {
+        background: var(--panel);
+        color: var(--white);
+        border-color: rgba(255, 255, 255, 0.15);
+      }
+
+      /* api key banner */
+      .api-banner {
+        display: none;
+        background: rgba(249, 115, 22, 0.1);
+        border-bottom: 1px solid rgba(249, 115, 22, 0.25);
+        padding: 10px 20px;
+        font-size: 0.82rem;
+        color: #fdba74;
+        gap: 8px;
+        align-items: center;
+      }
+      .api-banner.show {
+        display: flex;
+      }
+      .api-banner a {
+        color: #fb923c;
+        font-weight: 600;
+        text-decoration: none;
+      }
+      .api-banner a:hover {
+        text-decoration: underline;
+      }
+
+      /* messages */
+      .messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 28px 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+      }
+      .messages::-webkit-scrollbar {
+        width: 4px;
+      }
+      .messages::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.07);
+        border-radius: 10px;
+      }
+
+      /* welcome */
+      .welcome {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        flex: 1;
+        padding: 40px 16px;
+        animation: fadeUp 0.5s ease;
+      }
+      .w-icon {
+        width: 68px;
+        height: 68px;
+        border-radius: 18px;
+        background: linear-gradient(135deg, var(--blue), var(--cyan));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.9rem;
+        margin-bottom: 18px;
+        box-shadow: 0 12px 40px rgba(37, 99, 235, 0.3);
+        animation: float 3s ease-in-out infinite;
+        overflow: hidden;
+      }
+      .w-icon img {
+        width: 44px;
+        height: 44px;
+        object-fit: contain;
+        filter: brightness(10);
+      }
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-6px);
+        }
+      }
+      .welcome h2 {
+        font-size: clamp(1.6rem, 3vw, 2rem);
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        margin-bottom: 10px;
+      }
+      .welcome h2 span {
+        background: linear-gradient(90deg, var(--blue-lt), var(--cyan));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .welcome p {
+        color: var(--muted);
+        font-size: 0.92rem;
+        font-weight: 300;
+        line-height: 1.7;
+        max-width: 380px;
+        margin-bottom: 26px;
+      }
+      .starters {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 9px;
+        width: 100%;
+        max-width: 500px;
+      }
+      .starter {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 11px;
+        padding: 13px 14px;
+        cursor: pointer;
+        text-align: left;
+        transition: all 0.2s;
+        font-family: var(--font);
+      }
+      .starter:hover {
+        border-color: rgba(37, 99, 235, 0.45);
+        background: rgba(37, 99, 235, 0.07);
+      }
+      .starter .si {
+        font-size: 1rem;
+        margin-bottom: 5px;
+        display: block;
+      }
+      .starter .st {
+        font-size: 0.79rem;
+        color: var(--muted);
+        font-weight: 400;
+        line-height: 1.4;
+      }
+
+      /* msg rows */
+      .msg-row {
+        display: flex;
+        gap: 10px;
+        max-width: 780px;
+        width: 100%;
+        animation: fadeUp 0.3s ease;
+      }
+      .msg-row.user {
+        margin-left: auto;
+        flex-direction: row-reverse;
+      }
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .avatar {
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.78rem;
+        font-weight: 700;
+      }
+      .avatar.ai {
+        background: linear-gradient(135deg, var(--blue), var(--cyan));
+        box-shadow: 0 3px 10px rgba(37, 99, 235, 0.3);
+        overflow: hidden;
+      }
+      .avatar.ai img {
+        width: 20px;
+        height: 20px;
+        object-fit: contain;
+        filter: brightness(10);
+      }
+      .avatar.user {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        color: var(--white);
+      }
+
+      .msg-wrap {
+        flex: 1;
+      }
+      .msg-meta {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        margin-bottom: 5px;
+      }
+      .msg-name {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--muted);
+      }
+      .msg-time {
+        font-size: 0.7rem;
+        color: rgba(240, 246, 255, 0.2);
+      }
+
+      .bubble {
+        padding: 13px 16px;
+        border-radius: 13px;
+        font-size: 0.9rem;
+        line-height: 1.75;
+        font-weight: 400;
+      }
+      .msg-row.ai .bubble {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-top-left-radius: 3px;
+      }
+      .msg-row.user .bubble {
+        background: linear-gradient(135deg, var(--blue), #1d4ed8);
+        border-top-right-radius: 3px;
+        color: #fff;
+        box-shadow: 0 4px 16px rgba(37, 99, 235, 0.25);
+      }
+
+      /* bubble markdown */
+      .bubble pre {
+        background: rgba(0, 0, 0, 0.45);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 8px;
+        padding: 12px;
+        margin: 10px 0;
+        overflow-x: auto;
+        font-family: var(--mono);
+        font-size: 0.8rem;
+        line-height: 1.6;
+      }
+      .bubble code {
+        font-family: var(--mono);
+        font-size: 0.83em;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 4px;
+        padding: 1px 5px;
+        color: var(--cyan);
+      }
+      .bubble pre code {
+        background: none;
+        padding: 0;
+        color: #93c5fd;
+      }
+      .bubble p + p {
+        margin-top: 9px;
+      }
+      .bubble ul,
+      .bubble ol {
+        padding-left: 18px;
+        margin: 7px 0;
+      }
+      .bubble li {
+        margin-bottom: 3px;
+      }
+      .bubble strong {
+        font-weight: 600;
+        color: var(--white);
+      }
+      .bubble h3 {
+        font-size: 0.95rem;
+        margin: 12px 0 5px;
+      }
+      .bubble h2 {
+        font-size: 1.05rem;
+        margin: 14px 0 6px;
+      }
+      .bubble blockquote {
+        border-left: 3px solid var(--cyan);
+        padding-left: 12px;
+        color: var(--muted);
+        font-style: italic;
+        margin: 8px 0;
+      }
+      .bubble hr {
+        border: none;
+        border-top: 1px solid var(--border);
+        margin: 10px 0;
+      }
+      .bubble table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 10px 0;
+        font-size: 0.82rem;
+      }
+      .bubble th,
+      .bubble td {
+        border: 1px solid var(--border);
+        padding: 7px 10px;
+        text-align: left;
+      }
+      .bubble th {
+        background: rgba(255, 255, 255, 0.04);
+        font-weight: 600;
+      }
+
+      /* msg actions */
+      .msg-acts {
+        display: flex;
+        gap: 4px;
+        margin-top: 7px;
+        opacity: 0;
+        transition: opacity 0.15s;
+      }
+      .msg-row:hover .msg-acts {
+        opacity: 1;
+      }
+      .m-act {
+        padding: 3px 9px;
+        border-radius: 6px;
+        background: none;
+        border: 1px solid var(--border);
+        color: var(--muted);
+        font-size: 0.72rem;
+        cursor: pointer;
+        font-family: var(--font);
+        transition: all 0.15s;
+      }
+      .m-act:hover {
+        background: var(--panel);
+        color: var(--white);
+      }
+
+      /* typing */
+      .typing {
+        display: flex;
+        gap: 4px;
+        align-items: center;
+        padding: 3px 0;
+      }
+      .typing span {
+        width: 6px;
+        height: 6px;
+        background: var(--cyan);
+        border-radius: 50%;
+        animation: td 1.2s infinite ease;
+      }
+      .typing span:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      .typing span:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+      @keyframes td {
+        0%,
+        80%,
+        100% {
+          transform: scale(0.7);
+          opacity: 0.4;
+        }
+        40% {
+          transform: scale(1.1);
+          opacity: 1;
+        }
+      }
+
+      /* ── INPUT ───────────────────── */
+      .input-area {
+        padding: 14px 20px 18px;
+        border-top: 1px solid var(--border);
+        background: rgba(8, 12, 20, 0.92);
+        backdrop-filter: blur(16px);
+        flex-shrink: 0;
+      }
+
+      /* API key input bar */
+      .apikey-bar {
+        display: none;
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+      .apikey-bar.show {
+        display: flex;
+      }
+      .apikey-input {
+        flex: 1;
+        background: var(--panel);
+        border: 1px solid rgba(249, 115, 22, 0.35);
+        border-radius: 9px;
+        color: var(--white);
+        font-family: var(--font);
+        font-size: 0.85rem;
+        padding: 9px 14px;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .apikey-input::placeholder {
+        color: var(--muted);
+      }
+      .apikey-input:focus {
+        border-color: rgba(249, 115, 22, 0.7);
+      }
+      .btn-save-key {
+        padding: 9px 16px;
+        background: rgba(249, 115, 22, 0.2);
+        border: 1px solid rgba(249, 115, 22, 0.4);
+        border-radius: 9px;
+        color: #fb923c;
+        font-family: var(--font);
+        font-size: 0.83rem;
+        font-weight: 600;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: all 0.2s;
+      }
+      .btn-save-key:hover {
+        background: rgba(249, 115, 22, 0.3);
+      }
+
+      .input-box {
+        display: flex;
+        gap: 8px;
+        align-items: flex-end;
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 13px;
+        padding: 9px 10px;
+        transition:
+          border-color 0.2s,
+          box-shadow 0.2s;
+      }
+      .input-box:focus-within {
+        border-color: rgba(37, 99, 235, 0.45);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.07);
+      }
+      .chat-input {
+        flex: 1;
+        background: none;
+        border: none;
+        outline: none;
+        color: var(--white);
+        font-family: var(--font);
+        font-size: 0.9rem;
+        font-weight: 400;
+        line-height: 1.5;
+        resize: none;
+        max-height: 150px;
+        min-height: 24px;
+        overflow-y: auto;
+      }
+      .chat-input::placeholder {
+        color: var(--muted);
+      }
+      .chat-input::-webkit-scrollbar {
+        width: 2px;
+      }
+
+      .input-tools {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+        flex-shrink: 0;
+      }
+      .tool-btn {
+        width: 30px;
+        height: 30px;
+        background: none;
+        border: none;
+        color: var(--muted);
+        cursor: pointer;
+        border-radius: 7px;
+        font-size: 0.9rem;
+        transition: all 0.15s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .tool-btn:hover {
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--white);
+      }
+      .send-btn {
+        width: 34px;
+        height: 34px;
+        background: linear-gradient(135deg, var(--blue), var(--cyan));
+        border: none;
+        border-radius: 9px;
+        color: #fff;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.95rem;
+        font-weight: 700;
+        transition: all 0.2s;
+        flex-shrink: 0;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+      }
+      .send-btn:hover {
+        transform: scale(1.07);
+        box-shadow: 0 6px 18px rgba(37, 99, 235, 0.5);
+      }
+      .send-btn:active {
+        transform: scale(0.94);
+      }
+      .send-btn:disabled {
+        background: rgba(255, 255, 255, 0.07);
+        box-shadow: none;
+        cursor: not-allowed;
+      }
+
+      .input-hint {
+        text-align: center;
+        font-size: 0.68rem;
+        color: rgba(240, 246, 255, 0.18);
+        margin-top: 8px;
+      }
+      .input-hint span {
+        color: rgba(6, 182, 212, 0.4);
+      }
+
+      /* ── MOBILE ────────────────────── */
+      .sb-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 15;
+        backdrop-filter: blur(3px);
+      }
+      @media (max-width: 768px) {
+        .sidebar {
+          position: fixed;
+          top: 0;
+          left: 0;
+          bottom: 0;
+          transform: translateX(-100%);
+          box-shadow: 4px 0 40px rgba(0, 0, 0, 0.6);
+        }
+        .sidebar.open {
+          transform: translateX(0);
+        }
+        .sb-overlay.show {
+          display: block;
+        }
+        .menu-btn {
+          display: flex;
+        }
+        .messages {
+          padding: 18px 14px;
+        }
+        .input-area {
+          padding: 10px 14px 14px;
+        }
+        .starters {
+          grid-template-columns: 1fr;
+        }
+        .welcome h2 {
+          font-size: 1.5rem;
+        }
+        .topbar {
+          padding: 10px 14px;
+        }
+      }
+      ::-webkit-scrollbar {
+        width: 4px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.07);
+        border-radius: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <div class="sb-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+      <!-- ── SIDEBAR ── -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sb-head">
+          <div class="brand">
+            <div class="brand-logo">
+              <img
+                src="img/raptor-ai.png"
+                alt="R"
+                onerror="
+                  this.style.display = 'none';
+                  this.parentElement.textContent = 'R';
+                "
+              />
+            </div>
+            <span class="brand-name">Raptor AI</span>
+          </div>
+          <div class="brand-by">by RATINGKU</div>
+          <button class="btn-new" onclick="newChat()">
+            ＋ &nbsp;Chat Baru
+          </button>
+        </div>
+
+        <div class="sb-section">Riwayat</div>
+        <div class="history" id="histList">
+          <div class="h-item active">
+            <span class="hi">💬</span><span class="ht">Chat baru</span>
+          </div>
+        </div>
+
+        <div class="sb-foot">Raptor AI • Llama 4 • Gratis</div>
+      </aside>
+
+      <!-- ── CHAT ── -->
+      <div class="chat-area">
+        <div class="topbar">
+          <div class="topbar-l">
+            <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+            <div class="model-pill">
+              <span class="dot"></span>
+              Raptor AI &nbsp;<span
+                style="color: var(--muted); font-size: 0.72rem"
+                >llama-3.3-70b</span
+              >
+            </div>
+          </div>
+          <div class="topbar-r">
+            <button class="icon-btn" title="Hapus chat" onclick="clearChat()">
+              🗑
+            </button>
+            <button class="icon-btn" title="Ekspor" onclick="exportChat()">
+              ⬇
+            </button>
+            <button
+              class="icon-btn"
+              title="Pengaturan API Key"
+              onclick="toggleApiInput()"
+            >
+              ⚙
+            </button>
+          </div>
+        </div>
+
+        <!-- API warning banner -->
+        <div class="api-banner" id="apiBanner">
+          ⚠️ API Key Groq belum diset. &nbsp;
+          <a href="https://console.groq.com/keys" target="_blank"
+            >Dapatkan gratis di console.groq.com</a
+          >
+          &nbsp;→ klik ⚙ di kanan atas lalu tempel API key-mu.
+        </div>
+
+        <div class="messages" id="messages">
+          <div class="welcome" id="welcome">
+            <div class="w-icon">
+              <img
+                src="img/dola-logo.jpeg"
+                alt="R"
+                onerror="this.parentElement.textContent = '⚡'"
+              />
+            </div>
+            <h2>Halo! Saya <span>Raptor AI</span> ⚡</h2>
+            <p>
+              Asisten AI gratis & canggih dari RATINGKU.<br />Tanyakan apa saja
+              — sains, kode, bisnis, kreatif, dan lebih!
+            </p>
+            <div class="starters">
+              <button class="starter" onclick="useStarter(this)">
+                <span class="si">✍️</span
+                ><span class="st"
+                  >Bantu saya menulis email profesional kepada klien</span
+                >
+              </button>
+              <button class="starter" onclick="useStarter(this)">
+                <span class="si">💻</span
+                ><span class="st"
+                  >Buatkan fungsi Python untuk mengurutkan data JSON</span
+                >
+              </button>
+              <button class="starter" onclick="useStarter(this)">
+                <span class="si">💡</span
+                ><span class="st"
+                  >Jelaskan machine learning dengan bahasa sederhana</span
+                >
+              </button>
+              <button class="starter" onclick="useStarter(this)">
+                <span class="si">🚀</span
+                ><span class="st"
+                  >Ide konten viral untuk Instagram bisnis saya</span
+                >
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Input -->
+        <div class="input-area">
+          <!-- API key row -->
+          <div class="apikey-bar" id="apikeyBar">
+            <input
+              type="password"
+              class="apikey-input"
+              id="apikeyInput"
+              placeholder="Tempel Groq API Key kamu di sini (gsk_...)"
+            />
+            <button class="btn-save-key" onclick="saveApiKey()">Simpan</button>
+          </div>
+
+          <div class="input-box">
+            <textarea
+              id="chatInput"
+              class="chat-input"
+              rows="1"
+              placeholder="Tanya Raptor AI apa saja…"
+              onkeydown="handleKey(event)"
+              oninput="autoResize(this)"
+            ></textarea>
+            <div class="input-tools">
+              <button class="send-btn" id="sendBtn" onclick="sendMsg()">
+                ↑
+              </button>
+            </div>
+          </div>
+          <div class="input-hint">
+            Raptor AI bisa salah — verifikasi info penting &nbsp;|&nbsp;
+            <span>Gratis • Powered by Groq + Llama 3.3-70B</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ─────────────────────────────────────────
+      // CONFIG — GANTI DENGAN API KEY GROQ KAMU
+      // Daftar gratis: https://console.groq.com/keys
+      // ─────────────────────────────────────────
+      const DEFAULT_API_KEY =
+        "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";
+      const GROQ_MODEL = "llama-3.3-70b-versatile";
+      const GROQ_ENDPOINT = "https://api.groq.com/openai/v1/chat/completions";
+
+      const SYSTEM_PROMPT = `Kamu adalah Raptor AI, asisten AI cerdas dan ramah dari platform RATINGKU — platform rating dan ulasan terpercaya Indonesia.
+
+Kemampuanmu:
+- Menjawab pertanyaan tentang apa saja: sains, teknologi, bisnis, kreativitas, hukum, kesehatan, dll
+- Menulis dan menjelaskan kode (Python, JS, HTML, dll)
+- Menulis konten: artikel, email, caption, copywriting
+- Analisis, brainstorming, dan pemecahan masalah
+- Matematika dan logika
+- Terjemahan dan pengeditan teks
+
+Kepribadian: ramah, jelas, antusias, sedikit humoris. Jawab dalam bahasa yang sama dengan pertanyaan user (Indonesia atau Inggris). Gunakan Markdown jika membantu. Jangan pernah menyebut dirimu sebagai model lain (Claude, GPT, Gemini, dll) — kamu adalah Raptor AI.`;
+
+      // ─────────────────────────────────────────
+      // STATE
+      // ─────────────────────────────────────────
+      let conversation = [];
+      let busy = false;
+      let apiKey = localStorage.getItem("raptor_groq_key") || DEFAULT_API_KEY;
+
+      // Init
+      (function init() {
+        checkApiKey();
+        document.getElementById("chatInput").focus();
+      })();
+
+      function getApiKey() {
+        return localStorage.getItem("raptor_groq_key") || DEFAULT_API_KEY;
+      }
+
+      function checkApiKey() {
+        const key = getApiKey();
+        const isDefault = !key || key === "ISI_GROQ_API_KEY_KAMU_DISINI";
+        document
+          .getElementById("apiBanner")
+          .classList.toggle("show", isDefault);
+      }
+
+      function toggleApiInput() {
+        const bar = document.getElementById("apikeyBar");
+        bar.classList.toggle("show");
+        if (bar.classList.contains("show")) {
+          const saved = localStorage.getItem("raptor_groq_key");
+          if (saved) document.getElementById("apikeyInput").value = saved;
+          document.getElementById("apikeyInput").focus();
+        }
+      }
+
+      function saveApiKey() {
+        const val = document.getElementById("apikeyInput").value.trim();
+        if (!val) return;
+        localStorage.setItem("raptor_groq_key", val);
+        document.getElementById("apikeyBar").classList.remove("show");
+        document.getElementById("apikeyInput").value = "";
+        checkApiKey();
+        showToast("✅ API Key tersimpan!");
+      }
+
+      // ─────────────────────────────────────────
+      // SEND
+      // ─────────────────────────────────────────
+      async function sendMsg(text) {
+        const input = document.getElementById("chatInput");
+        const msg = (text || input.value).trim();
+        if (!msg || busy) return;
+
+        document.getElementById("welcome")?.remove();
+        if (!text) {
+          input.value = "";
+          autoResize(input);
+        }
+
+        conversation.push({ role: "user", content: msg });
+        renderMsg("user", msg);
+
+        const tid = renderTyping();
+        busy = true;
+        document.getElementById("sendBtn").disabled = true;
+
+        if (conversation.length === 1) updateHistTitle(msg);
+
+        try {
+          const key = getApiKey();
+          if (!key || key === "ISI_GROQ_API_KEY_KAMU_DISINI")
+            throw new Error("NO_KEY");
+
+          const res = await fetch(GROQ_ENDPOINT, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${key}`,
+            },
+            body: JSON.stringify({
+              model: GROQ_MODEL,
+              messages: [
+                { role: "system", content: SYSTEM_PROMPT },
+                ...conversation,
+              ],
+              temperature: 0.7,
+              max_tokens: 2048,
+            }),
+          });
+
+          if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err?.error?.message || `HTTP ${res.status}`);
+          }
+
+          const data = await res.json();
+          const reply =
+            data.choices?.[0]?.message?.content || "Maaf, tidak ada respons.";
+
+          removeTyping(tid);
+          renderMsg("ai", reply);
+          conversation.push({ role: "assistant", content: reply });
+        } catch (e) {
+          removeTyping(tid);
+          if (e.message === "NO_KEY") {
+            renderMsg(
+              "ai",
+              "⚠️ **API Key belum diset!**\n\nKlik ikon ⚙ di kanan atas, lalu masukkan Groq API Key kamu.\n\n👉 Daftar gratis di [console.groq.com/keys](https://console.groq.com/keys)",
+            );
+          } else if (
+            e.message.includes("401") ||
+            e.message.includes("invalid_api_key")
+          ) {
+            renderMsg(
+              "ai",
+              "❌ **API Key tidak valid.**\n\nPastikan API Key Groq kamu benar. Klik ⚙ untuk menggantinya.",
+            );
+          } else if (e.message.includes("429")) {
+            renderMsg(
+              "ai",
+              "⏳ **Terlalu banyak permintaan.**\n\nGroq API sedang rate-limit. Tunggu beberapa detik lalu coba lagi.",
+            );
+          } else {
+            renderMsg(
+              "ai",
+              `⚠️ **Gagal terhubung.**\n\n\`${e.message}\`\n\nPeriksa koneksi internet kamu dan coba lagi.`,
+            );
+          }
+        }
+
+        busy = false;
+        document.getElementById("sendBtn").disabled = false;
+        document.getElementById("chatInput").focus();
+      }
+
+      // ─────────────────────────────────────────
+      // RENDER
+      // ─────────────────────────────────────────
+      function renderMsg(role, content) {
+        const wrap = document.getElementById("messages");
+        const time = new Date().toLocaleTimeString("id-ID", {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+        const isAI = role === "ai";
+
+        const row = document.createElement("div");
+        row.className = `msg-row ${role}`;
+
+        const avatarHTML = isAI
+          ? `<div class="avatar ai"><img src="img/logo.png.png" alt="R" onerror="this.parentElement.textContent='R'"></div>`
+          : `<div class="avatar user">U</div>`;
+
+        const acts = isAI
+          ? `
+    <div class="msg-acts">
+      <button class="m-act" onclick="copyBubble(this)">Salin</button>
+      <button class="m-act" onclick="regenerate()">↻ Ulang</button>
+    </div>`
+          : "";
+
+        row.innerHTML = `
+    ${avatarHTML}
+    <div class="msg-wrap">
+      <div class="msg-meta">
+        <span class="msg-name">${isAI ? "Raptor AI" : "Kamu"}</span>
+        <span class="msg-time">${time}</span>
+      </div>
+      <div class="bubble">${md(content)}</div>
+      ${acts}
+    </div>`;
+
+        wrap.appendChild(row);
+        scrollEnd();
+      }
+
+      function renderTyping() {
+        const wrap = document.getElementById("messages");
+        const id = "tp-" + Date.now();
+        const div = document.createElement("div");
+        div.className = "msg-row ai";
+        div.id = id;
+        div.innerHTML = `
+    <div class="avatar ai"><img src="img/logo.png.png" alt="R" onerror="this.parentElement.textContent='R'"></div>
+    <div class="msg-wrap">
+      <div class="msg-meta"><span class="msg-name">Raptor AI</span></div>
+      <div class="bubble"><div class="typing"><span></span><span></span><span></span></div></div>
+    </div>`;
+        wrap.appendChild(div);
+        scrollEnd();
+        return id;
+      }
+
+      function removeTyping(id) {
+        document.getElementById(id)?.remove();
+      }
+
+      // ─────────────────────────────────────────
+      // MARKDOWN RENDERER (simple)
+      // ─────────────────────────────────────────
+      function md(t) {
+        // escape HTML first
+        const esc = (s) =>
+          s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+        // fenced code blocks
+        t = t.replace(
+          /```(\w*)\n?([\s\S]*?)```/g,
+          (_, lang, code) =>
+            `<pre><code class="lang-${lang}">${esc(code.trim())}</code></pre>`,
+        );
+        // inline code
+        t = t.replace(/`([^`\n]+)`/g, (_, c) => `<code>${esc(c)}</code>`);
+        // bold+italic
+        t = t.replace(/\*\*\*(.+?)\*\*\*/g, "<strong><em>$1</em></strong>");
+        // bold
+        t = t.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+        // italic
+        t = t.replace(/\*(.+?)\*/g, "<em>$1</em>");
+        // strikethrough
+        t = t.replace(/~~(.+?)~~/g, "<del>$1</del>");
+        // headings
+        t = t.replace(/^### (.+)$/gm, "<h3>$1</h3>");
+        t = t.replace(/^## (.+)$/gm, "<h2>$1</h2>");
+        t = t.replace(/^# (.+)$/gm, "<h2>$1</h2>");
+        // blockquote
+        t = t.replace(/^> (.+)$/gm, "<blockquote>$1</blockquote>");
+        // HR
+        t = t.replace(/^---$/gm, "<hr>");
+        // unordered list
+        t = t.replace(/^[\-\*] (.+)$/gm, "<li>$1</li>");
+        t = t.replace(
+          /(<li>[\s\S]*?<\/li>)(\n<li>[\s\S]*?<\/li>)*/g,
+          (m) => `<ul>${m}</ul>`,
+        );
+        // ordered list
+        t = t.replace(/^\d+\. (.+)$/gm, "<li>$1</li>");
+        // links
+        t = t.replace(
+          /\[([^\]]+)\]\(([^)]+)\)/g,
+          '<a href="$2" target="_blank" style="color:var(--cyan)">$1</a>',
+        );
+        // paragraphs
+        t = t.replace(/\n\n/g, "</p><p>").replace(/\n/g, "<br>");
+        return t;
+      }
+
+      // ─────────────────────────────────────────
+      // UTILS
+      // ─────────────────────────────────────────
+      function scrollEnd() {
+        const w = document.getElementById("messages");
+        setTimeout(
+          () => w.scrollTo({ top: w.scrollHeight, behavior: "smooth" }),
+          50,
+        );
+      }
+      function handleKey(e) {
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          sendMsg();
+        }
+      }
+      function autoResize(el) {
+        el.style.height = "auto";
+        el.style.height = Math.min(el.scrollHeight, 150) + "px";
+      }
+      function useStarter(btn) {
+        const t = btn.querySelector(".st").textContent;
+        document.getElementById("chatInput").value = t;
+        autoResize(document.getElementById("chatInput"));
+        sendMsg(t);
+      }
+      function copyBubble(btn) {
+        const txt = btn.closest(".msg-wrap").querySelector(".bubble").innerText;
+        navigator.clipboard.writeText(txt).then(() => {
+          btn.textContent = "✓ Tersalin";
+          setTimeout(() => (btn.textContent = "Salin"), 1800);
+        });
+      }
+      function regenerate() {
+        if (conversation.length < 2 || busy) return;
+        conversation.pop();
+        const msgs = document.querySelectorAll(".msg-row.ai");
+        msgs[msgs.length - 1]?.remove();
+        const last = conversation.pop();
+        if (last) sendMsg(last.content);
+      }
+      function newChat() {
+        conversation = [];
+        const w = document.getElementById("messages");
+        w.innerHTML = `
+    <div class="welcome" id="welcome">
+      <div class="w-icon"><img src="img/logo.png.png" alt="R" onerror="this.parentElement.textContent='⚡'"></div>
+      <h2>Halo! Saya <span>Raptor AI</span> ⚡</h2>
+      <p>Asisten AI gratis & canggih dari RATINGKU.<br>Tanyakan apa saja — sains, kode, bisnis, kreatif, dan lebih!</p>
+      <div class="starters">
+        <button class="starter" onclick="useStarter(this)"><span class="si">✍️</span><span class="st">Bantu saya menulis email profesional kepada klien</span></button>
+        <button class="starter" onclick="useStarter(this)"><span class="si">💻</span><span class="st">Buatkan fungsi Python untuk mengurutkan data JSON</span></button>
+        <button class="starter" onclick="useStarter(this)"><span class="si">💡</span><span class="st">Jelaskan machine learning dengan bahasa sederhana</span></button>
+        <button class="starter" onclick="useStarter(this)"><span class="si">🚀</span><span class="st">Ide konten viral untuk Instagram bisnis saya</span></button>
+      </div>
+    </div>`;
+        addHistItem("Chat baru");
+        if (window.innerWidth <= 768) toggleSidebar();
+      }
+      function clearChat() {
+        if (!confirm("Hapus percakapan ini?")) return;
+        newChat();
+      }
+      function exportChat() {
+        if (!conversation.length) return showToast("Belum ada percakapan");
+        const txt = conversation
+          .map(
+            (m) =>
+              `[${m.role === "user" ? "KAMU" : "RAPTOR AI"}]\n${m.content}`,
+          )
+          .join("\n\n" + "─".repeat(40) + "\n\n");
+        const blob = new Blob(
+          [`RATINGKU — Raptor AI Chat Export\n${"═".repeat(40)}\n\n${txt}`],
+          { type: "text/plain" },
+        );
+        Object.assign(document.createElement("a"), {
+          href: URL.createObjectURL(blob),
+          download: `raptor-chat-${Date.now()}.txt`,
+        }).click();
+      }
+      function toggleSidebar() {
+        document.getElementById("sidebar").classList.toggle("open");
+        document.getElementById("overlay").classList.toggle("show");
+      }
+      function addHistItem(title) {
+        const list = document.getElementById("histList");
+        list
+          .querySelectorAll(".h-item")
+          .forEach((el) => el.classList.remove("active"));
+        const item = document.createElement("div");
+        item.className = "h-item active";
+        item.innerHTML = `<span class="hi">💬</span><span class="ht">${title}</span>`;
+        list.insertBefore(item, list.firstChild);
+      }
+      function updateHistTitle(title) {
+        const active = document.querySelector(".h-item.active .ht");
+        if (active)
+          active.textContent =
+            title.length > 34 ? title.slice(0, 34) + "…" : title;
+      }
+      function showToast(msg) {
+        const t = document.createElement("div");
+        t.style.cssText = `
+    position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+    background:#1a2235;border:1px solid rgba(255,255,255,.12);
+    color:#f0f6ff;padding:10px 20px;border-radius:10px;
+    font-size:.83rem;z-index:9999;animation:fadeUp .3s ease;
+    box-shadow:0 8px 24px rgba(0,0,0,.4);font-family:'Outfit',sans-serif`;
+        t.textContent = msg;
+        document.body.appendChild(t);
+        setTimeout(() => t.remove(), 2500);
+      }
+    </script>
+  </body>
+</html>

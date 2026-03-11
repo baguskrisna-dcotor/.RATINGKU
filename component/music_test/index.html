@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Music App</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; padding-bottom: 80px; }
+    .track { display: flex; align-items: center; gap: 12px; padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; }
+    .track:hover { background: #f9f9f9; }
+    .track img { width: 50px; height: 50px; border-radius: 4px; }
+    .track-info { flex: 1; }
+    .track-name { font-weight: bold; font-size: 14px; }
+    .track-artist { font-size: 12px; color: #888; }
+    .track-action { font-size: 12px; color: #aaa; min-width: 60px; text-align: right; }
+
+    #player { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; border-top: 1px solid #ddd; padding: 12px 20px; display: none; align-items: center; gap: 12px; }
+    #player img { width: 44px; height: 44px; border-radius: 4px; }
+    #player-info { flex: 1; }
+    #player-title { font-weight: bold; font-size: 13px; }
+    #player-artist { font-size: 11px; color: #888; }
+    audio { width: 300px; }
+  </style>
+</head>
+<body>
+
+  <h2>🌍 Global Chart</h2>
+  <div id="global-list"></div>
+
+  <h2 style="margin-top:30px;">🇮🇩 Indonesia</h2>
+  <div id="id-list"></div>
+
+  <h2 style="margin-top:30px;">⭐ Featured: Innocence</h2>
+  <div id="featured"></div>
+
+  <!-- PLAYER -->
+  <div id="player">
+    <img id="player-cover" src="" alt=""/>
+    <div id="player-info">
+      <div id="player-title">—</div>
+      <div id="player-artist">—</div>
+    </div>
+    <audio id="audio" controls></audio>
+  </div>
+
+  <script>
+    // ── FETCH ─────────────────────────────────────────────
+    async function fetchItunes(url) {
+      const res = await fetch(url);
+      return res.json();
+    }
+
+    // ── PLAY ──────────────────────────────────────────────
+    function play(name, artist, cover, previewUrl) {
+      document.getElementById('player-title').textContent = name;
+      document.getElementById('player-artist').textContent = artist;
+      document.getElementById('player-cover').src = cover;
+      document.getElementById('audio').src = previewUrl;
+      document.getElementById('audio').play();
+      document.getElementById('player').style.display = 'flex';
+    }
+
+    // ── LAZY PREVIEW: fetch preview saat diklik ───────────
+    async function onTrackClick(name, artist, cover, actionEl) {
+      actionEl.textContent = '...';
+      try {
+        const data = await fetchItunes(
+          `https://itunes.apple.com/search?term=${encodeURIComponent(name + ' ' + artist)}&entity=song&limit=1`
+        );
+        const preview = data.results[0]?.previewUrl;
+        if (preview) {
+          play(name, artist, cover, preview);
+          actionEl.textContent = '▶ Play';
+        } else {
+          actionEl.textContent = 'No preview';
+        }
+      } catch(e) {
+        actionEl.textContent = 'Error';
+      }
+    }
+
+    // ── RENDER RSS (lazy preview per klik) ────────────────
+    function renderRSS(tracks, containerId) {
+      const el = document.getElementById(containerId);
+      el.innerHTML = '';
+      tracks.forEach((t, i) => {
+        const name = t['im:name'].label;
+        const artist = t['im:artist'].label;
+        const cover = t['im:image'][2].label;
+
+        const div = document.createElement('div');
+        div.className = 'track';
+        div.innerHTML = `
+          <img src="${cover}" alt="${name}"/>
+          <div class="track-info">
+            <div class="track-name">${name}</div>
+            <div class="track-artist">${artist}</div>
+          </div>
+          <span class="track-action">#${i + 1}</span>
+        `;
+
+        const actionEl = div.querySelector('.track-action');
+        div.onclick = () => onTrackClick(name, artist, cover, actionEl);
+        el.appendChild(div);
+      });
+    }
+
+    // ── RENDER Search (preview langsung) ──────────────────
+    function renderSearch(tracks, containerId) {
+      const el = document.getElementById(containerId);
+      el.innerHTML = '';
+      tracks.forEach(t => {
+        if (t.kind !== 'song') return;
+        const div = document.createElement('div');
+        div.className = 'track';
+        div.innerHTML = `
+          <img src="${t.artworkUrl60}" alt="${t.trackName}"/>
+          <div class="track-info">
+            <div class="track-name">${t.trackName}</div>
+            <div class="track-artist">${t.artistName}</div>
+          </div>
+          <span class="track-action">${t.previewUrl ? '▶ Play' : 'No preview'}</span>
+        `;
+        if (t.previewUrl) {
+          div.onclick = () => play(t.trackName, t.artistName, t.artworkUrl100, t.previewUrl);
+        }
+        el.appendChild(div);
+      });
+    }
+ 
+    // ── INDONESIA (RSS → lazy preview per klik) ───────────
+    async function loadIndonesia() {
+    const data = await fetchItunes(
+        'https://itunes.apple.com/search?term=musik+indonesia&entity=song&country=ID&limit=20'
+    );
+    renderSearch(data.results, 'id-list');
+    }
+
+    // ── FEATURED: INNOCENCE (lookup by ID → preview langsung) ──
+    async function loadFeatured() {
+      const data = await fetchItunes(
+        'https://itunes.apple.com/lookup?id=1839474549'
+      );
+      renderSearch(data.results, 'featured');
+    }
+
+    // ── INIT ──────────────────────────────────────────────
+    loadIndonesia();
+    loadFeatured();
+  </script>
+
+</body>
+</html>

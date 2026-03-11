@@ -1,0 +1,87 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+.open-chat-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.open-chat{
+    position: relative;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    font-size: 30px;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    z-index: 2;
+    background-color: #3B7660;
+}
+
+.open-chat::before{
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+    transition: all 0.3s ease;
+}
+
+
+
+.open-chat.chat-active:hover::before{
+    transform: scale(1.1);
+    background-image: url(face3.png) !important;
+}
+.open-chat.chat-deactive:hover::before{
+    transform: scale(1.1);
+    background-image: url(face2.png) !important;
+}
+.open-chat.chat-active::before{
+    -webkit-box-shadow:0px 0px 105px 16px rgba(53, 115, 92, 0.43);
+    -moz-box-shadow: 0px 0px 105px 16px rgba(53, 115, 92, 0.43);
+    box-shadow: 0px 0px 105px 16px rgba(53, 115, 92, 0.43);
+    background-image: url(face.png);
+}
+.open-chat.chat-deactive::before{
+    background-image: url(face1.png);
+
+}
+
+.open-chat:hover{
+    -webkit-box-shadow:0px 0px 105px 16px rgba(53, 115, 92, 0.43);
+-moz-box-shadow: 0px 0px 105px 16px rgba(53, 115, 92, 0.43);
+box-shadow: 0px 0px 105px 16px rgba(53, 115, 92, 0.43);
+    transition: all 0.3s ease;
+}
+
+.chat-hook{
+    position: relative;
+    top: 7px;
+    z-index: 1;
+    background-color:#3B7660;
+    padding: 10px 15px;
+    border-radius: 30px 30px 0px 30px;
+    color: white;
+    font-family: roboto;
+    margin-right: 60px;
+    transition: all 0.3s ease;
+}
+
+.chat-hook.chat-active{
+    opacity: 1;
+    transition: all 0.3s ease;
+}
+
+.chat-hook.chat-deactive{
+    opacity: 0;
+    transition: all 0.3s ease;
+}
